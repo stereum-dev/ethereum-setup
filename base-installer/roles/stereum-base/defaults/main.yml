@@ -1,0 +1,6 @@
+---
+ubuntu_common_stereum_password: "{{ lookup('password', './stereum-pwd chars=ascii_letters,digits,hexdigits,punctuation length=64') }}"
+ubuntu_common_stereum_user_name: stereum
+ubuntu_common_stereum_public_keys:
+  - ~/.ssh/id_rsa.pub
+ubuntu_common_ssh_port: 5511

@@ -1,0 +1,54 @@
+---
+- name: Install aptitude using apt
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: yes
+    force_apt_get: yes
+
+- name: Install required system packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - software-properties-common
+  - python3-pip
+  - python3-docker
+  - virtualenv
+  - python3-setuptools
+  - gnupg2
+  - pass
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- name: Update apt and install docker-ce and docker-compose
+  apt:
+    update_cache: yes
+    name:
+    - docker-ce
+    - docker-compose
+    state: latest
+
+- name: enable service docker
+  systemd:
+    name: docker
+    enabled: yes
+    masked: no
+
+- name: add stereum user to docker group
+  user:
+    name: "{{ ubuntu_common_stereum_user_name }}"
+    groups: docker
+    append: yes

@@ -1,0 +1,6 @@
+---
+stereum-test:
+  hosts:
+    188.34.160.190
+  vars:
+    ansible_user: root

@@ -1,0 +1,1 @@
+# stereum-base-installer

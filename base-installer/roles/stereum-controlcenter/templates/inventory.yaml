@@ -1,0 +1,6 @@
+---
+stereum-test:
+  hosts:
+    {{ inventory_hostname }}
+  vars:
+    ansible_user: stereum

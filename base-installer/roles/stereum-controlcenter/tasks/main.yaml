@@ -1,0 +1,26 @@
+---
+- name: prepare installer directory
+  file:
+    path: /opt/stereum/controlcenter
+    state: directory
+    owner: stereum
+    mode: '0755'
+
+- name: write docker-compose
+  template:
+    src: docker-compose.yaml
+    dest: /opt/stereum/controlcenter/docker-compose.yaml
+    owner: stereum
+    mode: '0644'
+
+- name: write inventory
+  template:
+    src: inventory.yaml
+    dest: /opt/stereum/controlcenter/inventory.yaml
+    owner: stereum
+    mode: '0644'
+
+- name: start controlcenter
+  shell: docker-compose up -d
+  args:
+    chdir: /opt/stereum/controlcenter

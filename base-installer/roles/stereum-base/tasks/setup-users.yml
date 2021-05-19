@@ -1,0 +1,28 @@
+---
+- name: Add stereum user
+  user: 
+    name: "{{ ubuntu_common_stereum_user_name }}" 
+    password: "{{ ubuntu_common_stereum_password | password_hash('sha512') }}" 
+    shell: /bin/bash
+    generate_ssh_key: yes
+    ssh_key_type: rsa
+    ssh_key_bits: 4096
+    ssh_key_file: .ssh/id_rsa
+    force: no
+
+- name: Read public key into variable
+  command: cat /home/{{ ubuntu_common_stereum_user_name }}/.ssh/id_rsa.pub
+  register: user_public_key_file
+
+- name: Add authorized keys for stereum user for local ssh
+  authorized_key: 
+    user: "{{ ubuntu_common_stereum_user_name }}"
+    key: "{{ user_public_key_file.stdout }}"
+    state: present
+
+- name: Add stereum user to sudoers
+  lineinfile: 
+    dest: /etc/sudoers
+    regexp: "{{ ubuntu_common_stereum_user_name }} ALL"
+    line: "{{ ubuntu_common_stereum_user_name }} ALL=(ALL) NOPASSWD:ALL"
+    state: present
