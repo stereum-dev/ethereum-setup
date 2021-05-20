@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	release := "%%RELEASE%%"
+	release := "0.0.1-3"
 
 	var args, err = ParseArgs()
 	if err != nil {
@@ -54,7 +54,9 @@ func main() {
 		command := strings.TrimRight(string(curl_output), "\r\n")
 		if command != "" {
 			log.Info("curl found at " + command + " on remote, downloading installer with it")			
-			commandString = "curl --silent https://stereum.net/downloads/base-installer-"+ release +".run | sudo"
+
+			commandString = "curl --silent https://stereum.net/downloads/base-installer-"+ release +".run --output ./base_installer.run && chmod +x ./base_installer.run && ./base_installer.run"
+            log.Debug(commandString)			
 		}
 		if command == "" {
 			log.Warn("Cant find curl on remote, searching for wget")
@@ -62,7 +64,8 @@ func main() {
 			command := strings.TrimRight(string(wget_output), "\r\n")
 			if command != "" {
 				log.Info("wget found at " + command + " on remote, downloading installer with it")
-				commandString = "wget https://stereum.net/downloads/base-installer-"+ release+".run | sudo"
+				commandString = "wget https://stereum.net/downloads/base-installer-"+ release+".run -O ./base_installer.run && chmod +x ./base_installer.run && ./base_installer.run"
+                log.Debug(commandString)
 			}
 		}
 

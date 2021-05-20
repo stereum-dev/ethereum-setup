@@ -5,10 +5,10 @@ pipeline {
             steps {
                 checkout scm
                 dir('base-installer') {                    
-                    sh 'sed -i s/%%RELEASE%%/${RELEASE}-${BUILD_NUMBER}/ roles/stereum-base/defaults/main.yml'
+                    sh 'sed -i s/%%CONTROLCENTER_RELEASE%%/${CONTROLCENTER_RELEASE}/ roles/stereum-controlcenter/defaults/main.yaml'
                     sh 'bundle-playbook -f ./playbook.yaml'
                     sh 'mv playbook.run base-installer-${RELEASE}-${BUILD_NUMBER}.run'
-                    sh 'rm -f /var/jenkins_home/publish/*'
+                    sh 'rm -f /var/jenkins_home/publish'
                     sh 'cp base-installer-${RELEASE}-${BUILD_NUMBER}.run /var/jenkins_home/publish'
                 }                
             }
@@ -24,10 +24,8 @@ pipeline {
             }
         }
         stage('Push') {
-            steps {
-                // TODO: build windows binary and copy to share
-                sh '/var/jenkins_home/release_publish.sh'
-            }
+            // TODO: build windows binary and copy to share
+            sh '/var/jenkins_home/release_publish.sh'
         }        
     }
     post { 
