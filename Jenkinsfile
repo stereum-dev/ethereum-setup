@@ -5,10 +5,10 @@ pipeline {
             steps {
                 checkout scm
                 dir('base-installer') {                    
-                    sh 'sed -i s/%%RELEASE%%/${RELEASE}-${BUILD_NUMBER}/ stereum-controlcenter/defaults/main.yaml'
+                    sh 'sed -i s/%%RELEASE%%/${RELEASE}-${BUILD_NUMBER}/ roles/stereum-base/defaults/main.yml'
                     sh 'bundle-playbook -f ./playbook.yaml'
                     sh 'mv playbook.run base-installer-${RELEASE}-${BUILD_NUMBER}.run'
-                    sh 'rm -f /var/jenkins_home/publish'
+                    sh 'rm -f /var/jenkins_home/publish/*'
                     sh 'cp base-installer-${RELEASE}-${BUILD_NUMBER}.run /var/jenkins_home/publish'
                 }                
             }
