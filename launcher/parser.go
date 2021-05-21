@@ -13,7 +13,7 @@ var opts struct {
 	// is encountered (can be set multiple times, like -vvv)
 	Verbose  bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
 	Port     int    `short:"p" long:"port" description:"Port" default:"22"`
-	Host     string `long:"host" description:"Target Host" required:"true"`
+	Host     string `short:"o" long:"host" description:"Target Host" required:"true"`
 	User     string `short:"u" long:"user" description:"Target user" required:"false"`
 	Password string `short:"P" long:"password" description:"Password" required:"false"`
 	Keyfile  string `short:"k" long:"keyfile" description:"Keyfile" required:"false"`

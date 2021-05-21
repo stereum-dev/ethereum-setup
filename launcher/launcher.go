@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -12,7 +11,7 @@ import (
 )
 
 func main() {
-	release := "0.0.1-3"
+	release := "%%RELEASE%%"
 
 	var args, err = ParseArgs()
 	if err != nil {
@@ -53,31 +52,32 @@ func main() {
 		curl_output, err := conn.SendCommands("which curl")
 		command := strings.TrimRight(string(curl_output), "\r\n")
 		if command != "" {
-			log.Info("curl found at " + command + " on remote, downloading installer with it")			
+			log.Info("curl found at " + command + " on remote, downloading and running installer with it")
 
-			commandString = "curl --silent https://stereum.net/downloads/base-installer-"+ release +".run --output ./base_installer.run && chmod +x ./base_installer.run && ./base_installer.run"
-            log.Debug(commandString)			
+			commandString = "curl --silent https://stereum.net/downloads/base-installer-" + release + ".run --output /tmp/stereum-installer && chmod +x /tmp/stereum-installer"
+			log.Debug(commandString)
 		}
 		if command == "" {
 			log.Warn("Cant find curl on remote, searching for wget")
 			wget_output, _ := conn.SendCommands("which wget")
 			command := strings.TrimRight(string(wget_output), "\r\n")
 			if command != "" {
-				log.Info("wget found at " + command + " on remote, downloading installer with it")
-				commandString = "wget https://stereum.net/downloads/base-installer-"+ release+".run -O ./base_installer.run && chmod +x ./base_installer.run && ./base_installer.run"
-                log.Debug(commandString)
+				log.Info("wget found at " + command + " on remote, downloading and running installer with it")
+				commandString = "wget https://stereum.net/downloads/base-installer-" + release + ".run -O /tmp/stereum-installer && chmod +x /tmp/base_installer.run"
+				log.Debug(commandString)
 			}
 		}
 
 		log.Debug("downloading installer on remote")
 		command_output, err := conn.SendCommands(commandString)
+		log.Info(string(command_output))
 		if err != nil {
 			log.Fatal("Unable to download installer on remote, exiting")
 			log.Fatal(err)
 		}
 		log.Debug("installer downloaded, starting installation" + string(command_output))
 		installer_output, _ := conn.SendCommands("/tmp/stereum-installer")
-		fmt.Println(string(installer_output))
+		log.Info(string(installer_output))
 	}
 
 	start_controlcenter_tunnel := YesNo("start controlcenter tunnel? Select[Yes/No]")
