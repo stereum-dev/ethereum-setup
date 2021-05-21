@@ -76,7 +76,7 @@ func main() {
 			log.Fatal(err)
 		}
 		log.Debug("installer downloaded, starting installation" + string(command_output))
-		installer_output, _ := conn.SendCommands("/tmp/stereum-installer")
+		installer_output, _ := conn.SendCommands("sudo /tmp/stereum-installer")
 		log.Info(string(installer_output))
 	}
 
