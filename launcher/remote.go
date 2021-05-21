@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"io"
 	"io/ioutil"
-	"log"
 	"net"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 	kh "golang.org/x/crypto/ssh/knownhosts"
 )
@@ -85,17 +85,6 @@ func (conn *Connection) SendCommands(cmds ...string) ([]byte, error) {
 	}
 	defer session.Close()
 
-	modes := ssh.TerminalModes{
-		ssh.ECHO:          0,     // disable echoing
-		ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
-		ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
-	}
-
-	err = session.RequestPty("xterm", 80, 40, modes)
-	if err != nil {
-		return []byte{}, err
-	}
-
 	in, err := session.StdinPipe()
 	if err != nil {
 		log.Fatal(err)
@@ -107,33 +96,23 @@ func (conn *Connection) SendCommands(cmds ...string) ([]byte, error) {
 	}
 
 	var output []byte
-
 	go func(in io.WriteCloser, out io.Reader, output *[]byte) {
 		var (
-			line string
 			r    = bufio.NewReader(out)
+			line string
 		)
 		for {
 			b, err := r.ReadByte()
 			if err != nil {
 				break
 			}
-
 			*output = append(*output, b)
-
-			if b == byte('\n') {
-				line = ""
-				continue
-			}
-
 			line += string(b)
-
-			if strings.HasPrefix(line, "[sudo] password for ") && strings.HasSuffix(line, ": ") {
-				_, err = in.Write([]byte(conn.password + "\n"))
-				if err != nil {
-					break
-				}
+			if string(b) == "\n" {
+				log.Info(line)
+				line = ""
 			}
+
 		}
 	}(in, out, &output)
 

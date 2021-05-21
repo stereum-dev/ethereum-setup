@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/elliotchance/sshtunnel"
+	browser "github.com/pkg/browser"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -85,6 +86,9 @@ func main() {
 		log.Debug("Starting controlcenter tunnel 8000 -> localhost:8081")
 		go tunnel_installer.Start()
 		log.Info("ControlCenter tunnel establised 8000 -> localhost:8081")
+
+		log.Info("Trying to open Browser Window for Stereum ControlCenter")
+		browser.OpenURL("http://localhost:8081")
 	}
 
 	start_grafana_tunnel := YesNo("start grafana tunnel? Select[Yes/No]")
@@ -93,11 +97,14 @@ func main() {
 		go tunnel_grafana.Start()
 		log.Info("Grafana tunnel established 8080 -> localhost:8082")
 		time.Sleep(100 * time.Millisecond)
+
+		log.Info("Trying to open Browser Window for Grafana")
+		browser.OpenURL("http://localhost:8082")
 	}
 
 	shutdown := false
 	for !shutdown {
-		shutdown = Wait("Shutdown tunnels?")
+		shutdown = Wait("Shutdown tunnels? Please be aware that your browser tunnels wont work anymore after this step")
 	}
 
 }
