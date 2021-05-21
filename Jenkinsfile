@@ -24,8 +24,10 @@ pipeline {
             }
         }
         stage('Push') {
-            // TODO: build windows binary and copy to share
-            sh '/var/jenkins_home/release_publish.sh'
+            steps {
+                // TODO: build windows binary and copy to share
+                sh '/var/jenkins_home/release_publish.sh'
+            }                
         }        
     }
     post { 
