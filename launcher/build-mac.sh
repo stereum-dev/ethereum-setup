@@ -7,7 +7,7 @@ if [ -z "$RELEASE" ];then
 fi
 
 mkdir build
-cp -r *.go *.mod build
+cp -r *.go *.mod *.sum build
 cd build
-sed -i s/%%RELEASE%%/${RELEASE}/ launcher.go
+sed -i '' s/%%RELEASE%%/${RELEASE}/ launcher.go
 go build
