@@ -6,7 +6,9 @@ if [ -z "$RELEASE" ];then
   exit 8
 fi
 
-mkdir build
+go get github.com/pkg/browser
+
+mkdir -p build
 cp -r *.go *.mod *.sum build
 cd build
 sed -i '' s/%%RELEASE%%/${RELEASE}/ launcher.go
