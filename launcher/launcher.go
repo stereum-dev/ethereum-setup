@@ -64,7 +64,7 @@ func main() {
 			command := strings.TrimRight(string(wget_output), "\r\n")
 			if command != "" {
 				log.Info("wget found at " + command + " on remote, downloading and running installer with it")
-				commandString = "wget https://stereum.net/downloads/base-installer-" + release + ".run -O /tmp/stereum-installer && chmod +x /tmp/base_installer.run"
+				commandString = "wget https://stereum.net/downloads/base-installer-" + release + ".run -O /tmp/stereum-installer && chmod +x /tmp/stereum-installer"
 				log.Debug(commandString)
 			}
 		}
