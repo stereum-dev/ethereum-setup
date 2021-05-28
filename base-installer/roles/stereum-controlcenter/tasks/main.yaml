@@ -1,4 +1,11 @@
 ---
+- name: Install git
+  apt:
+    update_cache: yes
+    name:
+    - git    
+    state: latest
+
 - name: prepare installer directory
   file:
     path: /opt/stereum/controlcenter
@@ -6,17 +13,39 @@
     owner: stereum
     mode: '0755'
 
-- name: write docker-compose
-  template:
-    src: docker-compose.yaml
-    dest: /opt/stereum/controlcenter/docker-compose.yaml
+- name: prepare stereum directory
+  file:
+    path: /opt/stereum/controlcenter/stereum
+    state: directory
     owner: stereum
-    mode: '0644'
+    mode: '0755'
+
+- name: checkout stereum-install
+  shell: "git clone https://github.com/stereum-dev/ethereum2-ansible.git stereum"
+  args:
+    chdir: /opt/stereum/controlcenter
+
+- name: checkout stereum-install release tag
+  shell: "git checkout tags/{{ stereum_version }}"
+  args:
+    chdir: /opt/stereum/controlcenter/stereum
+
+- name: create playbook.yaml
+  shell: "cp init-setup.yaml playbook.yaml"
+  args:
+    chdir: /opt/stereum/controlcenter/stereum
 
 - name: write inventory
   template:
     src: inventory.yaml
-    dest: /opt/stereum/controlcenter/inventory.yaml
+    dest: /opt/stereum/controlcenter/stereum/inventory.yaml
+    owner: stereum
+    mode: '0644'
+
+- name: write docker-compose
+  template:
+    src: docker-compose.yaml
+    dest: /opt/stereum/controlcenter/docker-compose.yaml
     owner: stereum
     mode: '0644'
 

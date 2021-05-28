@@ -1,5 +1,5 @@
 ---
-stereum-test:
+stereumnodes:
   hosts:
     {{ inventory_hostname }}
   vars:

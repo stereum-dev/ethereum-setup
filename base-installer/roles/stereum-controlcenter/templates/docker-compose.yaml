@@ -7,3 +7,4 @@ services:
     volumes:
       - /home/stereum/.ssh:/root/.ssh
       - $PWD/inventory.yaml:/opt/app/inventory.yaml
+      - $PWD/stereum:/opt/app/stereum-release

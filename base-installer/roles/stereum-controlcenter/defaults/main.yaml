@@ -1,2 +1,3 @@
 ---
-controlcenter_version: %%CONTROLCENTER_RELEASE%%
+controlcenter_version: "%%CONTROLCENTER_RELEASE%%"
+stereum_version: beta-6rc6-82
