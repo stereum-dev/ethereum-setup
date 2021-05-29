@@ -7,9 +7,9 @@ pipeline {
                 dir('base-installer') {                    
                     sh 'sed -i s/%%CONTROLCENTER_RELEASE%%/${CONTROLCENTER_RELEASE}/ roles/stereum-controlcenter/defaults/main.yaml'
                     sh 'bundle-playbook -f ./playbook.yaml'
-                    sh 'mv playbook.run base-installer-${RELEASE}-${BUILD_NUMBER}.run'
+                    sh 'mv playbook.run base-installer-${RELEASE}.run'
                     sh 'rm -f /var/jenkins_home/publish/*'
-                    sh 'cp base-installer-${RELEASE}-${BUILD_NUMBER}.run /var/jenkins_home/publish'
+                    sh 'cp base-installer-${RELEASE}.run /var/jenkins_home/publish'
                 }                
             }
         }
