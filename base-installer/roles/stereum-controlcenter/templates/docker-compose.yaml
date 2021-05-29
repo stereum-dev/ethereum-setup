@@ -6,5 +6,6 @@ services:
       - "127.0.0.1:8000:80"
     volumes:
       - /home/stereum/.ssh:/root/.ssh
+      - /etc/stereum/:/etc/stereum
       - $PWD/inventory.yaml:/opt/app/inventory.yaml
       - $PWD/stereum:/opt/app/stereum-release
