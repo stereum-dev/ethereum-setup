@@ -9,3 +9,7 @@ services:
       - /etc/stereum/:/etc/stereum
       - $PWD/inventory.yaml:/opt/app/inventory.yaml
       - $PWD/stereum:/opt/app/stereum-release
+    extra_hosts:
+      - "{{ docker_host_internal }}:host-gateway"
+
+# EOF

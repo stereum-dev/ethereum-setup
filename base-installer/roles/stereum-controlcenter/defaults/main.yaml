@@ -1,3 +1,6 @@
 ---
 controlcenter_version: "%%CONTROLCENTER_RELEASE%%"
 stereum_version: "%%CONTROLCENTER_RELEASE%%"
+docker_host_internal: host.docker.internal
+
+# EOF

@@ -1,6 +1,6 @@
 ---
 stereumnodes:
   hosts:
-    {{ inventory_hostname }}
+    {{ docker_host_internal }}
   vars:
     ansible_user: stereum
