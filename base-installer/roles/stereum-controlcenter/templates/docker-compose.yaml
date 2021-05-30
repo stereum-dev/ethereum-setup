@@ -4,6 +4,8 @@ services:
     image: "stereum/control-center-web:{{ controlcenter_version }}"
     ports:
       - "127.0.0.1:8000:80"
+    environment:
+      - ANSIBLE_HOST_KEY_CHECKING=False
     volumes:
       - /home/stereum/.ssh:/root/.ssh
       - /etc/stereum/:/etc/stereum
