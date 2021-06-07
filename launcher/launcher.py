@@ -110,7 +110,7 @@ def main():
         sys.exit(8)                
 
     install(host=args.host, 
-    port=args.port, 
+    port=int(args.port), 
     username=args.user, 
     password=args.password, 
     keyfile=args.keyfile, 
