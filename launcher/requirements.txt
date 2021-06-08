@@ -1,0 +1,14 @@
+altgraph==0.17
+bcrypt==3.2.0
+cffi==1.14.5
+cryptography==3.4.7
+future==0.18.2
+paramiko==2.7.2
+pefile==2021.5.24
+pycparser==2.20
+pyinstaller==4.3
+pyinstaller-hooks-contrib==2021.1
+PyNaCl==1.4.0
+pywin32-ctypes==0.2.0
+six==1.16.0
+sshtunnel==0.4.0
