@@ -73,8 +73,8 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
         if status == 0:
             print('opening tunnels')
             #keyfile="./id_rsa"    
-            with sshtunnel.open_tunnel((host, 22), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', 8000), local_bind_address=('0.0.0.0', controlcenter_port)) as installer_tunnel, \
-                sshtunnel.open_tunnel((host, 22), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', 8001), local_bind_address=('0.0.0.0', grafana_port)) as grafana_tunnel :
+            with sshtunnel.open_tunnel((host, int(22)), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', int(8000)), local_bind_address=('0.0.0.0', controlcenter_port)) as installer_tunnel, \
+                sshtunnel.open_tunnel((host, int(22)), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', int(8001)), local_bind_address=('0.0.0.0', grafana_port)) as grafana_tunnel :
                 logging.info('Tunneling installer to http://localhost:%s' %controlcenter_port )
                 logging.info('Tunneling grafana to http://localhost:%s' %grafana_port)                
                 webbrowser.open_new('http://localhost:8081')
@@ -114,8 +114,8 @@ def main():
     username=args.user, 
     password=args.password, 
     keyfile=args.keyfile, 
-    controlcenter_port=args.ccport, 
-    grafana_port=args.grafanaport, 
+    controlcenter_port=int(args.ccport), 
+    grafana_port=int(args.grafanaport), 
     stereum_release=args.stereumrelease)
 
 if __name__ == "__main__":        
