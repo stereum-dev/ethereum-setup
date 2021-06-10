@@ -17,9 +17,9 @@ pipeline {
             steps {
                 checkout scm                
                 dir('launcher') {                    
-                    sh 'sed -i s/%%RELEASE%%/${RELEASE}/ launcher.go'
-                    sh 'go build'
-                    sh 'cp launcher /var/jenkins_home/publish'
+                    sh 'sed -i s/%%RELEASE%%/${RELEASE}/ launcher.py'
+                    sh 'pyinstaller --onefile launcher.py'
+                    sh 'cp dist/launcher /var/jenkins_home/publish'
                 }                
             }
         }
