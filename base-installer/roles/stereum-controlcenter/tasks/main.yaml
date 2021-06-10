@@ -9,7 +9,7 @@
 
 - name: delete previous release
   file:
-    path: /opt/stereum/controlcenter
+    path: /opt/stereum/controlcenter/stereum
     state: absent    
   when: existing_stereum_release is defined and existing_stereum_release != 'None'
 
@@ -23,13 +23,6 @@
 - name: prepare installer directory
   file:
     path: /opt/stereum/controlcenter
-    state: directory
-    owner: stereum
-    mode: '0755'
-
-- name: prepare stereum directory
-  file:
-    path: /opt/stereum/controlcenter/stereum
     state: directory
     owner: stereum
     mode: '0755'
