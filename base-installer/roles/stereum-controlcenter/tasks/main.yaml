@@ -5,13 +5,11 @@
     chdir: /opt/stereum/controlcenter
   # ignore errors in case the container is not running
   ignore_errors: yes
-  when: existing_stereum_release is defined and existing_stereum_release != 'None'  
 
 - name: delete previous release
   file:
     path: /opt/stereum/controlcenter/stereum
     state: absent    
-  when: existing_stereum_release is defined and existing_stereum_release != 'None'
 
 - name: Install git
   apt:
