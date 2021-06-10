@@ -2,6 +2,7 @@ version: "3"
 services:
   controlcenter:
     image: "stereum/control-center-web:{{ controlcenter_version }}"
+    restart: always
     ports:
       - "127.0.0.1:8000:80"
     environment:
