@@ -141,8 +141,14 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
         else:
             print('*** done with errors. ***')
     except paramiko.ssh_exception.AuthenticationException as e:
-        logging.error('Problems connecting to host: %s' %e)    
+        logging.error('Authentication Problems connecting to host: %s' %e)    
         print('*** done with errors. ***')
+    except sshtunnel.BaseSSHTunnelForwarderError as e:
+        logging.error('Problems establishing tunnels, please wait a few minutes and retry')    
+        print('*** done with errors. ***')
+    except ConnectionRefusedError as e:
+        logging.error('Problems establishing tunnels, please wait a few minutes and retry')    
+        print('*** done with errors. ***')    
 
 def main():
     parser = argparse.ArgumentParser()
