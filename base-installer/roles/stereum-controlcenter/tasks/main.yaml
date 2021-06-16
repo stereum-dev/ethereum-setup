@@ -9,7 +9,8 @@
 - name: delete previous release
   file:
     path: /opt/stereum/controlcenter/stereum
-    state: absent    
+    state: absent   
+  ignore_errors: yes 
 
 - name: Install git
   apt:
@@ -34,6 +35,11 @@
   shell: "git checkout tags/{{ stereum_version }}"
   args:
     chdir: /opt/stereum/controlcenter/stereum
+
+- name: create .env
+  shell: "echo \"stereum_version_tag\"={{ stereum_version }} > .env"
+  args:
+    chdir: /opt/stereum/controlcenter/
 
 - name: create playbook.yaml
   shell: "cp init-setup.yaml playbook.yaml"

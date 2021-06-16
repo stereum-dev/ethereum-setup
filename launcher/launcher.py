@@ -16,6 +16,30 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
         status = stdout.channel.recv_exit_status()
         return status == 0
 
+    def check_controlcenter(client):
+        # check if /etc/stereum/ethereum2.yaml does not exist
+        logging.info('  checking stereum controlcenter')
+        commandString = "cat /opt/stereum/controlcenter/.env"
+        stdin, stdout, stderr = client.exec_command(commandString)
+        status = stdout.channel.recv_exit_status()
+        if status == 0:
+            out = stdout.read().decode('utf-8')
+            logging.debug('  found /opt/stereum/controlcenter/.env with content %s' %out)
+            return out.split('=')[1].replace('\n','')
+        return None
+
+    def check_controlcenter_web(client):
+        # check if /etc/stereum/ethereum2.yaml does not exist
+        logging.info('  checking stereum web cc')
+        commandString = "docker ps | grep control"
+        stdin, stdout, stderr = client.exec_command(commandString)
+        status = stdout.channel.recv_exit_status()
+        if status == 0:
+            out = stdout.read().decode('utf-8')
+            logging.debug('  found web-cc with content %s' %out)
+            return out.split('   ')[1].split(':')[1]
+        return None
+
     def get_stereum_release(client):
         # check if /etc/stereum/ethereum2.yaml does not exist
         logging.info('  getting installed stereum version')
@@ -86,8 +110,18 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
             existing_stereum_release = get_stereum_release(client)
             if existing_stereum_release:
                 logging.info('Found stereum_release %s, target version is %s' %(existing_stereum_release, stereum_release))
-            if existing_stereum_release == stereum_release:
-                logging.info('Existing Version %s seems to be equal target version %s, skipping update' %(existing_stereum_release, stereum_release))
+            cc_version = check_controlcenter(client)
+            cc_web_version = check_controlcenter_web(client)
+            if cc_version:
+                logging.info('Controlcenter Version is %s' %cc_version)
+            else:
+                logging.warning('Controlcenter Version could not be extracted, /opt/stereum/controlcenter/.env either not existing or empty')            
+            if cc_web_version:
+                logging.info('Controlcenter Web Version is %s' %cc_web_version)            
+            else:
+                logging.warning('Controlcenter Web Version could not be extracted, either not installed or web container is not running')            
+            if cc_version and cc_web_version and existing_stereum_release == stereum_release:
+                logging.info('Existing Version %s seems to be equal target version %s, skipping update' %(existing_stereum_release, stereum_release))            
             else:
                 status = download_bundle(client, stereum_release, existing_release=existing_stereum_release)
         client.close()
