@@ -5,6 +5,8 @@ import logging
 import webbrowser
 import sys
 import yaml
+import inquirer
+import requests
 
 def install(host=None, port=22, username='root', password=None, keyfile=None, controlcenter_port=8081, grafana_port=8082, prysmui_port=8083, stereum_release=None):
 
@@ -15,6 +17,15 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
         stdin, stdout, stderr = client.exec_command(commandString)
         status = stdout.channel.recv_exit_status()
         return status == 0
+
+    def get_latest_stereum_release_tag():
+        latest_stereum_release_tag = None
+        logging.debug('Fetching latest stereum releasetag from https://stereum.net/downloads/stable.update')
+        resp = requests.get('https://stereum.net/downloads/stable.update')
+        if resp.status_code == 200:
+            latest_stereum_release_tag = resp.text.replace('\n', '')
+            logging.debug('Found stereum release %s as latest available release' %latest_stereum_release_tag)
+        return latest_stereum_release_tag
 
     def check_controlcenter(client):
         # check if /etc/stereum/ethereum2.yaml does not exist
@@ -91,6 +102,8 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
         
     status = 0
     try:  
+        latest_stereum_release = get_latest_stereum_release_tag()
+
         client = paramiko.SSHClient()
         #client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -106,12 +119,28 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
 
         if not check_stereum(client):
             status = download_bundle(client, stereum_release)
-        else:
+        else:            
             existing_stereum_release = get_stereum_release(client)
             if existing_stereum_release:
                 logging.info('Found stereum_release %s, target version is %s' %(existing_stereum_release, stereum_release))
             cc_version = check_controlcenter(client)
             cc_web_version = check_controlcenter_web(client)
+
+            latest_version_sfx = '%s (latest)' %latest_stereum_release
+            cc_version_sfx = '%s (cc)' %cc_version if cc_version else None
+            cc_web_version_sfx = '%s (web-cc)' %cc_web_version if cc_web_version else None
+            existing_stereum_release_sfx = '%s (installed stereum)' %existing_stereum_release if existing_stereum_release else None
+            bundled_stereum_release_sfx = '%s (bundled with launcher or given via parms)' %stereum_release
+
+            questions = [
+                inquirer.List('stereum_release',
+                    message="We found multiple Stereum Versions, which to install?",
+                    choices=list(dict.fromkeys(filter(None, [latest_version_sfx, cc_version_sfx, cc_web_version_sfx, existing_stereum_release_sfx, bundled_stereum_release_sfx]))),
+                ),
+            ]            
+            answers = inquirer.prompt(questions)
+            stereum_release = answers['stereum_release'].split(' ')[0]
+
             if cc_version:
                 logging.info('Controlcenter Version is %s' %cc_version)
             else:
