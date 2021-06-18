@@ -27,6 +27,15 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
             logging.debug('Found stereum release %s as latest available release' %latest_stereum_release_tag)
         return latest_stereum_release_tag
 
+    def get_latest_stereum_release_rc_tag():
+        latest_stereum_release_rc_tag = None
+        logging.debug('Fetching latest stereum releasetag from https://stereum.net/downloads/rc.update')
+        resp = requests.get('https://stereum.net/downloads/rc.update')
+        if resp.status_code == 200:
+            latest_stereum_release_rc_tag = resp.text.replace('\n', '')
+            logging.debug('Found stereum release rc %s as latest available release' %latest_stereum_release_rc_tag)
+        return latest_stereum_release_rc_tag
+
     def check_controlcenter(client):
         # check if /etc/stereum/ethereum2.yaml does not exist
         logging.info('  checking stereum controlcenter')
@@ -103,6 +112,7 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
     status = 0
     try:  
         latest_stereum_release = get_latest_stereum_release_tag()
+        latest_stereum_release_rc = get_latest_stereum_release_rc_tag()
 
         client = paramiko.SSHClient()
         #client.load_system_host_keys()
@@ -119,7 +129,7 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
 
         if not check_stereum(client):
             status = download_bundle(client, stereum_release)
-        else:            
+        else:
             existing_stereum_release = get_stereum_release(client)
             if existing_stereum_release:
                 logging.info('Found stereum_release %s, target version is %s' %(existing_stereum_release, stereum_release))
@@ -127,30 +137,38 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
             cc_web_version = check_controlcenter_web(client)
 
             latest_version_sfx = '%s (latest)' %latest_stereum_release
-            cc_version_sfx = '%s (cc)' %cc_version if cc_version else None
-            cc_web_version_sfx = '%s (web-cc)' %cc_web_version if cc_web_version else None
-            existing_stereum_release_sfx = '%s (installed stereum)' %existing_stereum_release if existing_stereum_release else None
-            bundled_stereum_release_sfx = '%s (bundled with launcher or given via parms)' %stereum_release
+            latest_rc_version_sfx = '%s (latest rc - not recommended!)' %latest_stereum_release_rc
+            cc_version_sfx = '%s (control-center installed)' %cc_version if cc_version else None
+            cc_web_version_sfx = '%s (control-center running)' %cc_web_version if cc_web_version else None
+            existing_stereum_release_sfx = '%s (stereum setup installed)' %existing_stereum_release if existing_stereum_release else None
+            bundled_stereum_release_sfx = '%s (bundled with launcher or parameter used)' %stereum_release
 
             questions = [
                 inquirer.List('stereum_release',
-                    message="We found multiple Stereum Versions, which to install?",
-                    choices=list(dict.fromkeys(filter(None, [latest_version_sfx, cc_version_sfx, cc_web_version_sfx, existing_stereum_release_sfx, bundled_stereum_release_sfx]))),
+                    message="We found multiple Stereum Versions, which to use?",
+                    choices=list(dict.fromkeys(filter(None, [
+                        cc_web_version_sfx, 
+                        cc_version_sfx, 
+                        latest_version_sfx, 
+                        latest_rc_version_sfx, 
+                        existing_stereum_release_sfx, 
+                        bundled_stereum_release_sfx
+                        ]))),
                 ),
-            ]            
+            ]
             answers = inquirer.prompt(questions)
             stereum_release = answers['stereum_release'].split(' ')[0]
 
             if cc_version:
                 logging.info('Controlcenter Version is %s' %cc_version)
             else:
-                logging.warning('Controlcenter Version could not be extracted, /opt/stereum/controlcenter/.env either not existing or empty')            
+                logging.warning('Controlcenter Version could not be extracted, /opt/stereum/controlcenter/.env either not existing or empty')
             if cc_web_version:
-                logging.info('Controlcenter Web Version is %s' %cc_web_version)            
+                logging.info('Controlcenter Web Version is %s' %cc_web_version)
             else:
-                logging.warning('Controlcenter Web Version could not be extracted, either not installed or web container is not running')            
-            if cc_version and cc_web_version and existing_stereum_release == stereum_release:
-                logging.info('Existing Version %s seems to be equal target version %s, skipping update' %(existing_stereum_release, stereum_release))            
+                logging.warning('Controlcenter Web Version could not be extracted, either not installed or web container is not running')
+            if cc_version == stereum_release and cc_web_version == stereum_release:
+                logging.info('Existing Version %s seems to be equal target version %s, skipping update' %(existing_stereum_release, stereum_release))
             else:
                 status = download_bundle(client, stereum_release, existing_release=existing_stereum_release)
         client.close()
@@ -170,14 +188,14 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
         else:
             print('*** done with errors. ***')
     except paramiko.ssh_exception.AuthenticationException as e:
-        logging.error('Authentication Problems connecting to host: %s' %e)    
+        logging.error('Authentication Problems connecting to host: %s' %e)
         print('*** done with errors. ***')
     except sshtunnel.BaseSSHTunnelForwarderError as e:
-        logging.error('Problems establishing tunnels, please wait a few minutes and retry')    
+        logging.error('Problems establishing tunnels, please wait a few minutes and retry')
         print('*** done with errors. ***')
     except ConnectionRefusedError as e:
-        logging.error('Problems establishing tunnels, please wait a few minutes and retry')    
-        print('*** done with errors. ***')    
+        logging.error('Problems establishing tunnels, please wait a few minutes and retry')
+        print('*** done with errors. ***')
 
 def main():
     parser = argparse.ArgumentParser()
