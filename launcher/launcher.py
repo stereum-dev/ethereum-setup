@@ -147,11 +147,11 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
                 inquirer.List('stereum_release',
                     message="We found multiple Stereum Versions, which to use?",
                     choices=list(dict.fromkeys(filter(None, [
+                        existing_stereum_release_sfx, 
                         cc_web_version_sfx, 
                         cc_version_sfx, 
                         latest_version_sfx, 
                         latest_rc_version_sfx, 
-                        existing_stereum_release_sfx, 
                         bundled_stereum_release_sfx
                         ]))),
                 ),
