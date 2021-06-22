@@ -13,7 +13,7 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
     def check_stereum(client):
         # check if /etc/stereum/ethereum2.yaml does not exist
         logging.info('  checking stereum ')
-        commandString = "ls /etc/stereum/ethereum2.yaml"
+        commandString = "sudo ls /etc/stereum/ethereum2.yaml"
         stdin, stdout, stderr = client.exec_command(commandString)
         status = stdout.channel.recv_exit_status()
         return status == 0
@@ -51,7 +51,7 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
     def check_controlcenter_web(client):
         # check if /etc/stereum/ethereum2.yaml does not exist
         logging.info('  checking stereum web cc')
-        commandString = "docker ps | grep control"
+        commandString = "sudo docker ps | grep control"
         stdin, stdout, stderr = client.exec_command(commandString)
         status = stdout.channel.recv_exit_status()
         if status == 0:
@@ -63,7 +63,7 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
     def get_stereum_release(client):
         # check if /etc/stereum/ethereum2.yaml does not exist
         logging.info('  getting installed stereum version')
-        commandString = "cat /etc/stereum/ethereum2.yaml"
+        commandString = "sudo cat /etc/stereum/ethereum2.yaml"
         stdin, stdout, stderr = client.exec_command(commandString)
         status = stdout.channel.recv_exit_status()
         if status == 0:
