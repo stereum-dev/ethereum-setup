@@ -122,7 +122,7 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
             privkey = paramiko.RSAKey.from_private_key_file(keyfile)
         else:
             privkey = None
-        client.connect(host, 22, username=username, password=password, pkey=privkey)
+        client.connect(host, port, username=username, password=password, pkey=privkey)
 
         if not stereum_release:
             stereum_release = '%%STEREUMRELEASE%%'
@@ -176,9 +176,9 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
         if status == 0:
             print('opening tunnels %s, %s, %s' %(controlcenter_port, grafana_port, prysmui_port))
             #keyfile="./id_rsa"
-            with sshtunnel.open_tunnel((host, int(22)), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', int(8000)), local_bind_address=('0.0.0.0', int(controlcenter_port))) as installer_tunnel, \
-                sshtunnel.open_tunnel((host, int(22)), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', int(3000)), local_bind_address=('0.0.0.0', int(grafana_port))) as grafana_tunnel, \
-                sshtunnel.open_tunnel((host, int(22)), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', int(7500)), local_bind_address=('0.0.0.0', int(prysmui_port))) as grafana_tunnel :
+            with sshtunnel.open_tunnel((host, port), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', int(8000)), local_bind_address=('0.0.0.0', int(controlcenter_port))) as installer_tunnel, \
+                sshtunnel.open_tunnel((host, port), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', int(3000)), local_bind_address=('0.0.0.0', int(grafana_port))) as grafana_tunnel, \
+                sshtunnel.open_tunnel((host, port), ssh_username=username, ssh_pkey=keyfile, remote_bind_address=('127.0.0.1', int(7500)), local_bind_address=('0.0.0.0', int(prysmui_port))) as grafana_tunnel :
                 logging.info('Tunneling installer & control-center to http://localhost:%s' %controlcenter_port )
                 logging.info('Tunneling grafana to http://localhost:%s' %grafana_port)
                 logging.info('Tunneling prysm ui to http://localhost:%s' %prysmui_port)
