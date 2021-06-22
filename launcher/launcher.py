@@ -72,7 +72,7 @@ def install(host=None, port=22, username='root', password=None, keyfile=None, co
     
     def launch_bundle(client, existing_release='None'):
         logging.info('  launching installation of stereum release %s This can take a few minutes, your browser will open up upon completion with the installation wizard!' %stereum_release)
-        commandString = "chmod +x /tmp/base_installer.run && /tmp/base_installer.run --extra-vars=existing_release=\"existing_stereum_release=%s \"" %existing_release
+        commandString = "chmod +x /tmp/base_installer.run && /tmp/base_installer.run --extra-vars=existing_release=\"existing_stereum_release=%s \" --extra-vars=stereum_ssh_port=\"%s\"" %(existing_release, port)
         stdin, stdout, stderr = client.exec_command(commandString)
         status = stdout.channel.recv_exit_status()
         if status == 0:

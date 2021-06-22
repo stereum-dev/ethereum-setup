@@ -4,3 +4,4 @@ stereumnodes:
     {{ docker_host_internal }}
   vars:
     ansible_user: stereum
+    ansible_port: {{ stereum_ssh_port | default('22') }}
