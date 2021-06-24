@@ -106,26 +106,46 @@ export default {
     },
     fetchReleases: async function () {
       try {
-            await ControlService.connect(this.model);            
-      } catch (ex) {
+            await ControlService.connect(this.model);
+      } catch (ex) {  
          console.log(ex);
          this.$toasted.show('Error connecting to server! Level: ' + ex.level + " Message: " + ex.message);
          return;
       }
       try {
-        const stereumStatus = await ControlService.inquire(this.model);        
+        const stereumStatus = await ControlService.inquire(this.model);
+        this.releases = [];
+        this.model.stereumRelease = undefined;
         if (!stereumStatus.exists) {
           this.releases = [stereumStatus.latestRelease]
         } else {
-          if (stereumStatus.latestRelease)
+          if (stereumStatus.latestRelease) {
             this.releases.push({ text: `${stereumStatus.latestRelease} (latest)`, value: stereumStatus.latestRelease });
-          if (stereumStatus.existingRelease)
-            this.releases.push({ text: `${stereumStatus.existingRelease} (installed)`, value: stereumStatus.existingRelease });        
-          if (stereumStatus.ccRelease)
-            this.releases.push({ text: `${stereumStatus.ccRelease} (controlcenter)`, value: stereumStatus.ccRelease });        
-          if (stereumStatus.ccwebRelease)
-            this.releases.push({ text: `${stereumStatus.ccwebRelease} (web)`, value: stereumStatus.ccwebRelease });
-        }      
+            this.model.stereumRelease = stereumStatus.latestRelease;
+          }
+
+          if (stereumStatus.latestRcRelease)
+            this.releases.push({ text: `${stereumStatus.latestRcRelease} (latest unstable - not recommended!)`, value: stereumStatus.latestRcRelease });
+          
+          if (stereumStatus.existingRelease) {
+            this.releases.push({ text: `${stereumStatus.existingRelease} (installed node)`, value: stereumStatus.existingRelease });
+            this.model.stereumRelease = stereumStatus.existingRelease;
+          }
+          
+          if (stereumStatus.ccRelease) {
+            this.releases.push({ text: `${stereumStatus.ccRelease} (installed control-center)`, value: stereumStatus.ccRelease });
+            if (this.model.stereumRelease === undefined) {
+              this.model.stereumRelease = stereumStatus.ccRelease;
+            }
+          }
+
+          if (stereumStatus.ccwebRelease) {
+            this.releases.push({ text: `${stereumStatus.ccwebRelease} (running control-center)`, value: stereumStatus.ccwebRelease });
+            if (this.model.stereumRelease === undefined) {
+              this.model.stereumRelease = stereumStatus.ccwebRelease;
+            }
+          }
+        }
         return Promise.resolve(true);
       } catch (ex) {
          console.log(ex);

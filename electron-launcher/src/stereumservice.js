@@ -12,7 +12,7 @@ export class StereumService {
     async check_stereum() {
         // check if /etc/stereum/ethereum2.yaml does not exist
         console.log('  checking stereum ');
-        const resp = await this.sshService.exec("ls /etc/stereum/ethereum2.yaml");
+        const resp = await this.sshService.exec("sudo ls /etc/stereum/ethereum2.yaml");
         return resp.rc == 0;
     }
 
@@ -27,10 +27,21 @@ export class StereumService {
         return latest_stereum_release_tag;
     }
 
+    async get_latest_stereum_release_rc_tag() {
+        let latest_stereum_release_tag = undefined;
+        console.log('Fetching latest stereum releasetag from https://stereum.net/downloads/rc.update');
+        const resp = await axios.get('https://stereum.net/downloads/rc.update');
+        if (resp.status == 200) {
+            latest_stereum_release_tag = resp.data.replace('\n', '');
+            console.log('Found stereum release rc %s as latest available release rc ' %latest_stereum_release_tag);
+        }
+        return latest_stereum_release_tag;
+    }
+
     async check_controlcenter() {
         // check if /etc/stereum/ethereum2.yaml does not exist
         console.log('  checking stereum controlcenter');
-        const resp = await this.sshService.exec("cat /opt/stereum/controlcenter/.env");
+        const resp = await this.sshService.exec("sudo cat /opt/stereum/controlcenter/.env");
         if (resp.rc == 0) {
             const out = resp.stdout;
             console.log('  found /opt/stereum/controlcenter/.env with content %s' %out);
@@ -42,7 +53,7 @@ export class StereumService {
     async check_controlcenter_web() {
         // check if /etc/stereum/ethereum2.yaml does not exist
         console.log('  checking stereum web cc');
-        const resp = await this.sshService.exec("docker ps | grep control");
+        const resp = await this.sshService.exec("sudo docker ps | grep control");
         if (resp.rc == 0) {                    
             return resp.stdout.split('   ')[1].split(':')[1];
         }
@@ -52,7 +63,7 @@ export class StereumService {
     async get_stereum_release() {
         // check if /etc/stereum/ethereum2.yaml does not exist
         console.log('  getting installed stereum version');
-        const resp = await this.sshService.exec("cat /etc/stereum/ethereum2.yaml");
+        const resp = await this.sshService.exec("sudo cat /etc/stereum/ethereum2.yaml");
         if (resp.rc == 0) {            
             let yaml_doc = yaml.load(resp.stdout);
             return yaml_doc.stereum_version_tag;
@@ -80,6 +91,7 @@ export class StereumService {
             exists: false,
             existingRelease: undefined,
             latestRelease: undefined,
+            latestRcRelease: undefined,
             ccRelease: undefined,
             ccwebRelease: undefined,
         };
@@ -87,6 +99,7 @@ export class StereumService {
         if (stereumExists) {                
             stereumInfo.exists = true;
             stereumInfo.latestRelease = await this.get_latest_stereum_release_tag();
+            stereumInfo.latestRcRelease = await this.get_latest_stereum_release_rc_tag();
             stereumInfo.existingRelease = await this.get_stereum_release();
             stereumInfo.ccRelease = await this.check_controlcenter();
             stereumInfo.ccwebRelease = await this.check_controlcenter_web();

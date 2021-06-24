@@ -1,6 +1,7 @@
 <template>
   <div>
-    <span> We found multiple Stereum Releases, please pick the one to install</span>
+    <h3>Choose Version - multiple found</h3>
+
     <div class="text-left">
       <b-form-radio-group
         :stacked="true"
