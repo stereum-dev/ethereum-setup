@@ -32,7 +32,7 @@ export class StereumService {
         console.log('  checking stereum controlcenter');
         const resp = await this.sshService.exec("cat /opt/stereum/controlcenter/.env");
         if (resp.rc == 0) {
-            const out = resp.stdout.read();
+            const out = resp.stdout;
             console.log('  found /opt/stereum/controlcenter/.env with content %s' %out);
             return out.split('=')[1].replace('\n','');
         }
