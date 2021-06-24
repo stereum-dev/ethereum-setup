@@ -2,6 +2,8 @@
 
 ## Project setup
 ```
+npm install -g modernizr
+npm install iconv-corefoundation
 npm install
 ```
 
