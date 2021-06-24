@@ -13,8 +13,11 @@
                                     <h2 class="fs-title">Connection Information</h2>
                                     <input type="text" name="host" v-model="model.host" placeholder="IP or Hostname" />
                                     <input type="text" name="user" v-model="model.user" placeholder="Username" />
-                                    <input type="password" name="user" v-model="model.password" placeholder="Password" />
-                                    <input type="text" name="user" v-model="model.keyfileLocation" placeholder="Keyfile Location" />
+                                    <b-form-checkbox v-model="model.sshKeyAuth" name="check-button" switch>
+                                        Use SSH key authentication
+                                    </b-form-checkbox>
+                                    <input type="password" name="user" v-model="model.password" placeholder="Password" v-if="model.sshKeyAuth == false" />
+                                    <input type="text" name="sshKeyAuthFile" v-model="model.keyfileLocation" placeholder="Keyfile Location" v-if="model.sshKeyAuth" />
                                     <input type="text" name="stereum-release" v-model="model.stereumRelease"  placeholder="Stereum Release" />                                    
                                 </div>                                 
                                 <div class="col-md-6">

@@ -13,8 +13,9 @@ export default {
   data() {
     return {
       connectionParms: {
-        host: '65.21.178.198',
-        keyfileLocation: 'C:\\Users\\Michael\\Documents\\develop\\rl\\electron-launcher\\src\\id_rsa',
+        host: '',
+        keyfileLocation: '',
+        sshKeyAuth: false,
       }      
     };
   },
