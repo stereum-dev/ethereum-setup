@@ -53,19 +53,28 @@ export default {
     model: Object,
   },
   methods: {
-      async connect(e) {        
-        this.tunnels = [{ name: 'web-cc', localPort: 9081, dstPort: 8000 }];  
-        await ControlService.connect(this.model);
+      async connect(e) {
+        this.tunnels = [{ name: 'web-cc', localPort: 9081, dstPort: 8000 }];
+        try {
+            await ControlService.connect(this.model);
+        } catch (ex) {
+            console.log(ex);
+            this.$toasted.show('Error connecting to server! Level: ' + ex.level + " Message: " + ex.message);
+            return;
+        }
+        
         const stereumStatus = await ControlService.inquire(this.model);
+
         if (!stereumStatus.exists)
             await ControlService.setup(stereumStatus.latestRelease);
         else {
             this.$toasted.show('Multiple Stereum Versions found!');
             this.stereumVersions = stereumStatus;
-        }                
+        }
+        
         await ControlService.openTunnels(this.tunnels);
         await ControlService.disconnect();
-        e.preventDefault(); 
+        e.preventDefault();
       }
   }
 };
