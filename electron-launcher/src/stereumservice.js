@@ -42,9 +42,8 @@ export class StereumService {
     async check_controlcenter_web() {
         // check if /etc/stereum/ethereum2.yaml does not exist
         console.log('  checking stereum web cc');
-        const resp = await this.sshService.exec("docker ps | grep control");        
-        if (resp.rc == 0) {            
-            console.log('  found web-cc with content %s' %resp.stdout);
+        const resp = await this.sshService.exec("docker ps | grep control");
+        if (resp.rc == 0) {                    
             return resp.stdout.split('   ')[1].split(':')[1];
         }
         return undefined;
@@ -90,7 +89,7 @@ export class StereumService {
             stereumInfo.latestRelease = await this.get_latest_stereum_release_tag();
             stereumInfo.existingRelease = await this.get_stereum_release();
             stereumInfo.ccRelease = await this.check_controlcenter();
-            stereumInfo.ccswebRelease = await this.check_controlcenter_web();
+            stereumInfo.ccwebRelease = await this.check_controlcenter_web();
         }            
         return stereumInfo;        
     }

@@ -31,7 +31,7 @@ promiseIpc.on('inquire', async (arg) => {
 
 // called via promiseIpc as an async function
 promiseIpc.on('setup', async (arg) => {        
-  return stereumService.getInstalledVersions(remoteHost);    
+  return stereumService.setup(arg.stereumRelease);    
 });
 
 // called via promiseIpc as an async function
