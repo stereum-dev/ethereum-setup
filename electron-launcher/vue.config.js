@@ -4,11 +4,11 @@ module.exports = {
     lintOnSave: false,
     publicPath: process.env.VUE_BASE_URL || '/',
     productionSourceMap: false,    
-    /*pluginOptions: {
+    pluginOptions: {
         electronBuilder: {
           preload: 'src/preload.js',          
         }
-    },*/
+    },
     configureWebpack: {
         module: {
             // Fix for flot resize
