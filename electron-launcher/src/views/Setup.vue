@@ -16,7 +16,7 @@ export default {
         host: '',
         keyfileLocation: '',
         sshKeyAuth: false,
-      }      
+      }
     };
   },
   components: {

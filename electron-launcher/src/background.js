@@ -17,11 +17,11 @@ promiseIpc.on('ready', (arg) => {
 })
 
 // called via promiseIpc as an async function
-promiseIpc.on('connect', async (arg) => {      
+promiseIpc.on('connect', async (arg) => {
   remoteHost = arg;
-  if (arg.keyfileLocation) 
-    remoteHost.privateKey = readFileSync(arg.keyfileLocation, {encoding: 'utf8'});        
-    return stereumService.connect(remoteHost);    
+  if (arg.sshKeyAuth)
+    remoteHost.privateKey = readFileSync(arg.keyfileLocation, {encoding: 'utf8'});
+    return stereumService.connect(remoteHost);
 });
 
 // called via promiseIpc as an async function
