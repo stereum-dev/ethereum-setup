@@ -1,9 +1,9 @@
 {
-  "name": "stereum-electron-launcher",
+  "name": "stereum-launcher",
   "version": "0.0.0",
   "private": true,
-  "description": "Electron Launcher",
-  "author": "stereum",
+  "description": "Stereum Ethereum Node Setup Launcher",
+  "author": "stereum.net",
   "scripts": {
     "serve": "vue-cli-service serve --port 8081",
     "build": "vue-cli-service build",
@@ -22,6 +22,8 @@
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.15.1",
     "electron-promise-ipc": "^2.2.4",
+    "iconv": "^3.0.0",
+    "iconv-corefoundation": "^1.1.6",
     "js-yaml": "^4.1.0",
     "ssh2": "^1.1.0",
     "tunnel-ssh": "^4.1.4",

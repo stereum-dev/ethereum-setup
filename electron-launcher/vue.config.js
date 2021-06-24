@@ -3,10 +3,10 @@ const webpack = require('webpack')
 module.exports = {
     lintOnSave: false,
     publicPath: process.env.VUE_BASE_URL || '/',
-    productionSourceMap: false,    
+    productionSourceMap: false,
     pluginOptions: {
         electronBuilder: {
-          preload: 'src/preload.js',          
+          preload: 'src/preload.js',
         }
     },
     configureWebpack: {
