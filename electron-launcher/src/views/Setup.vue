@@ -20,8 +20,10 @@ export default {
     return {
       connectionParms: {
         host: '',
+        user: '',
         keyfileLocation: '',
         sshKeyAuth: false,
+        port: 22,
       }
     };
   },  
