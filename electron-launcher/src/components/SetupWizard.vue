@@ -1,8 +1,7 @@
 <template>
   <div>
     <b-card
-      img-src="https://picsum.photos/600/50/?grayscale"
-      img-alt="Image"
+      img-src="setup-banner.png"
       img-top
       tag="article"
       style="max-width: 20rem"
