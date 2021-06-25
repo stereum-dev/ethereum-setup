@@ -93,7 +93,7 @@ export class SSHService {
                 localHost:'0.0.0.0',
                 localPort: tunnelConfig.localPort,
                 privateKey: this.connectionInfo.privateKey || undefined,                
-            };        
+            };
             console.log(config);
             
             tunnel(config, (error, server) => {

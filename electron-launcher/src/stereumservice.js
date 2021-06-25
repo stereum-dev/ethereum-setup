@@ -107,15 +107,15 @@ export class StereumService {
         return stereumInfo;        
     }
 
-    async launch_bundle(existing_release='None') {
+    async launch_bundle(existing_release) {
         return new Promise(async (resolve, reject) => {
-            console.log('  launching installation of stereum release %s This can take a few minutes, your browser will open up upon completion with the installation wizard!' %stereum_release);        
-            const resp = await this.sshService.exec(`chmod +x /tmp/base_installer.run && /tmp/base_installer.run --extra-vars=existing_release=\"${existing_release} \"`);        
+            console.log('  launching installation of stereum release ' + existing_release + ' This can take a few minutes, your browser will open up upon completion with the installation wizard!');
+            const resp = await this.sshService.exec("chmod +x /tmp/base_installer.run && /tmp/base_installer.run --extra-vars=existing_release=\"" + existing_release + "\"");
             if (resp.rc == 0) {
-                print ('    successfully launched base-installer')
+                console.log ('    successfully launched base-installer')
                 resolve(resp);
             } else {
-                print(`**** problems launch base-installer: Status: ${status} ****, ansible logs below:\n, ${resp.stdout}`);
+                console.log("**** problems launch base-installer: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
                 reject(resp);
             }
             return status
@@ -127,25 +127,27 @@ export class StereumService {
             let commandString = "";
             console.log('checking requirements for base-installation');
             let resp = await this.sshService.exec("which curl");
-            if (resp.stdout.length() > 0) {
-                console.log('  found curl at %s' %curl_location.replace('\n',''));
+            if (resp.stdout.length > 0) {
+                console.log('  found curl at ' + resp.stdout.replace('\n',''));
                 commandString = "curl --silent https://stereum.net/downloads/base-installer-" + release + ".run --output /tmp/stereum-installer";
             }
             resp = await this.sshService.exec("which wget");
-            if (resp.stdout.length() > 0) {
-                console.log('  found wget at %s' %wget_location.replace('\n',''));
+            if (resp.stdout.length > 0) {
+                console.log('  found wget at ' + resp.stdout.replace('\n',''));
                 commandString = "wget https://stereum.net/downloads/base-installer-" + release + ".run -O /tmp/base_installer.run";
             }
             
             console.log('using base-installer bundle');
             console.log('  fetching');
-            resp = await this.sshService.exec(commandString);                
+            resp = await this.sshService.exec(commandString);
+            let status;
             if (resp.rc == 0) {
                 console.log('    successfully fetched base-installer');
-                status = await launch_bundle(release);
+                status = await this.launch_bundle(release);
                 resolve(status);
             } else {
-                print(`**** problems fetching base-installer: Status: ${status} ****, ansible logs below:\n, ${resp.stdout}`);
+                console.log("**** problems fetching base-installer: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
+                status = -1;
                 reject(resp);
             }
             return status;

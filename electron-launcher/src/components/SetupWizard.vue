@@ -76,6 +76,7 @@ export default {
       installationProgress: 0,
       installationSuccess: undefined,
       releases: [],
+      stereumStatus: [],
     };
   },
   props: {
@@ -92,15 +93,20 @@ export default {
       };      
       this.installationDone = false;          
 
-      //launch setup
-      try {
-            // TODO: check if installation is necessary
-            await ControlService.setup({ stereumRelease: this.model.stereumRelease });            
-            // TODO: initiate tunnels if installation succeeded
-      } catch (ex) {
-         console.log(ex);
-         this.$toasted.show('Error setting up stereum launcher! Level: ' + ex.level + " Message: " + ex.message);
-         return;
+      let status = 0;
+      if (this.model.stereumRelease != this.stereumStatus.ccwebRelease) {
+        //launch setup
+        try {
+              status = await ControlService.setup({ stereumRelease: this.model.stereumRelease });            
+        } catch (ex) {
+          console.log(ex);
+          this.$toasted.show('Error setting up stereum launcher! Level: ' + ex.level + " Message: " + ex.message);
+          return;
+        }
+      }
+
+      if (status == 0) {
+        await ControlService.openTunnels([{ dstPort: 8000, localPort: 8081}, { dstPort: 3000, localPort: 8082}, { dstPort: 7500, localPort: 8083}]);
       }
     },
     fetchReleases: async function () {
@@ -112,36 +118,36 @@ export default {
          return;
       }
       try {
-        const stereumStatus = await ControlService.inquire(this.model);
+        this.stereumStatus = await ControlService.inquire(this.model);
         this.releases = [];
         this.model.stereumRelease = undefined;
-        if (!stereumStatus.exists) {
-          this.releases = [stereumStatus.latestRelease]
+        if (!this.stereumStatus.exists) {
+          this.releases = [this.stereumStatus.latestRelease]
         } else {
-          if (stereumStatus.latestRelease) {
-            this.releases.push({ text: `${stereumStatus.latestRelease} (latest)`, value: stereumStatus.latestRelease });
-            this.model.stereumRelease = stereumStatus.latestRelease;
+          if (this.stereumStatus.latestRelease) {
+            this.releases.push({ text: `${this.stereumStatus.latestRelease} (latest)`, value: this.stereumStatus.latestRelease });
+            this.model.stereumRelease = this.stereumStatus.latestRelease;
           }
 
-          if (stereumStatus.latestRcRelease)
-            this.releases.push({ text: `${stereumStatus.latestRcRelease} (latest unstable - not recommended!)`, value: stereumStatus.latestRcRelease });
+          if (this.stereumStatus.latestRcRelease)
+            this.releases.push({ text: `${this.stereumStatus.latestRcRelease} (latest unstable - not recommended!)`, value: this.stereumStatus.latestRcRelease });
           
-          if (stereumStatus.existingRelease) {
-            this.releases.push({ text: `${stereumStatus.existingRelease} (installed node)`, value: stereumStatus.existingRelease });
-            this.model.stereumRelease = stereumStatus.existingRelease;
+          if (this.stereumStatus.existingRelease) {
+            this.releases.push({ text: `${this.stereumStatus.existingRelease} (installed node)`, value: this.stereumStatus.existingRelease });
+            this.model.stereumRelease = this.stereumStatus.existingRelease;
           }
           
-          if (stereumStatus.ccRelease) {
-            this.releases.push({ text: `${stereumStatus.ccRelease} (installed control-center)`, value: stereumStatus.ccRelease });
+          if (this.stereumStatus.ccRelease) {
+            this.releases.push({ text: `${this.stereumStatus.ccRelease} (installed control-center)`, value: this.stereumStatus.ccRelease });
             if (this.model.stereumRelease === undefined) {
-              this.model.stereumRelease = stereumStatus.ccRelease;
+              this.model.stereumRelease = this.stereumStatus.ccRelease;
             }
           }
 
-          if (stereumStatus.ccwebRelease) {
-            this.releases.push({ text: `${stereumStatus.ccwebRelease} (running control-center)`, value: stereumStatus.ccwebRelease });
+          if (this.stereumStatus.ccwebRelease) {
+            this.releases.push({ text: `${this.stereumStatus.ccwebRelease} (running control-center)`, value: this.stereumStatus.ccwebRelease });
             if (this.model.stereumRelease === undefined) {
-              this.model.stereumRelease = stereumStatus.ccwebRelease;
+              this.model.stereumRelease = this.stereumStatus.ccwebRelease;
             }
           }
         }

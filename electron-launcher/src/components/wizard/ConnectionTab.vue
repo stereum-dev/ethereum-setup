@@ -9,6 +9,11 @@
     </div>
     <div class="row">
         <div class="col-12 pt-2 pb-2">
+          <b-form-input v-model="model.port" placeholder="Port (default 22)"></b-form-input>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 pt-2 pb-2">
           <b-form-input v-model="model.user" placeholder="Username"></b-form-input>
         </div>
     </div>
