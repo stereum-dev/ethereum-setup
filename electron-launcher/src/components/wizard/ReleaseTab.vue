@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container text-left">
     <h3>Choose Version - multiple found</h3>
 
     <div class="text-left">

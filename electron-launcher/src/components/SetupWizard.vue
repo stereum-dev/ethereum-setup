@@ -13,9 +13,9 @@
           <form-wizard
             shape="square"
             color="#336666"
-            title="Stereum Base Installer"
-            subtitle="Setup Stereum"
-            finishButtonText="Start Installation"
+            title="Stereum Ethereum Node Setup Launcher"
+            subtitle="Connect to your node"
+            finishButtonText="Go!"
             @on-complete="onComplete"
             :hide-buttons="installationRunning || installationSuccess"
           >
