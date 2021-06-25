@@ -11,9 +11,15 @@ export class StereumService {
 
     async check_stereum() {
         // check if /etc/stereum/ethereum2.yaml does not exist
-        console.log('  checking stereum ');
-        const resp = await this.sshService.exec("sudo ls /etc/stereum/ethereum2.yaml");
-        return resp.rc == 0;
+        console.log('  checking stereum');
+        let exists = false;
+        try {
+            let resp = await this.sshService.exec("sudo ls /etc/stereum/ethereum2.yaml");
+            exists = resp.rc == 0;
+        } catch (ex) {
+            console.log("can't access ethereum2.yaml");
+        }
+        return exists;
     }
 
     async get_latest_stereum_release_tag() {
@@ -95,11 +101,13 @@ export class StereumService {
             ccRelease: undefined,
             ccwebRelease: undefined,
         };
+        
+        stereumInfo.latestRelease = await this.get_latest_stereum_release_tag();
+        stereumInfo.latestRcRelease = await this.get_latest_stereum_release_rc_tag();
+
         const stereumExists = await this.check_stereum();
         if (stereumExists) {                
             stereumInfo.exists = true;
-            stereumInfo.latestRelease = await this.get_latest_stereum_release_tag();
-            stereumInfo.latestRcRelease = await this.get_latest_stereum_release_rc_tag();
             stereumInfo.existingRelease = await this.get_stereum_release();
             stereumInfo.ccRelease = await this.check_controlcenter();
             stereumInfo.ccwebRelease = await this.check_controlcenter_web();
@@ -118,7 +126,7 @@ export class StereumService {
                 console.log("**** problems launch base-installer: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
                 reject(resp);
             }
-            return status
+            return resp.rc
         });
     }
 

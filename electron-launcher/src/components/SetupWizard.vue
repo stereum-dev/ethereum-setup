@@ -122,17 +122,19 @@ export default {
         this.stereumStatus = await ControlService.inquire(this.model);
         this.releases = [];
         this.model.stereumRelease = undefined;
-        if (!this.stereumStatus.exists) {
-          this.releases = [this.stereumStatus.latestRelease]
-        } else {
-          if (this.stereumStatus.latestRelease) {
-            this.releases.push({ text: `${this.stereumStatus.latestRelease} (latest)`, value: this.stereumStatus.latestRelease });
-            this.model.stereumRelease = this.stereumStatus.latestRelease;
-          }
 
-          if (this.stereumStatus.latestRcRelease)
-            this.releases.push({ text: `${this.stereumStatus.latestRcRelease} (latest unstable - not recommended!)`, value: this.stereumStatus.latestRcRelease });
-          
+        // always display latest release
+        if (this.stereumStatus.latestRelease) {
+          this.releases.push({ text: `${this.stereumStatus.latestRelease} (latest)`, value: this.stereumStatus.latestRelease });
+          this.model.stereumRelease = this.stereumStatus.latestRelease;
+        }
+
+        // always display latest rc release
+        if (this.stereumStatus.latestRcRelease)
+          this.releases.push({ text: `${this.stereumStatus.latestRcRelease} (latest unstable - not recommended!)`, value: this.stereumStatus.latestRcRelease });
+
+        // display existing stereum versions when installed/running
+        if (this.stereumStatus.exists) {
           if (this.stereumStatus.existingRelease) {
             this.releases.push({ text: `${this.stereumStatus.existingRelease} (installed node)`, value: this.stereumStatus.existingRelease });
             this.model.stereumRelease = this.stereumStatus.existingRelease;
