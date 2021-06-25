@@ -18,24 +18,18 @@
             @on-complete="onComplete"
             :hide-buttons="installationRunning || installationSuccess"
           >
-            <tab-content title="Welcome" icon="faw fas fa-compass">
-              <welcome-tab></welcome-tab>
-            </tab-content>
             <tab-content title="Connection" icon="faw fas fa-network-wired" :before-change="() => fetchReleases()">
               <connection-tab :model="model"></connection-tab>
             </tab-content>
             <tab-content title="Release" icon="faw fas fa-cogs">
-              <release-tab :releases="releases" :model="model"></release-tab>
-            </tab-content>                        
-            <tab-content title="Verify" icon="faw fas fa-check-double">
-              <verification-tab
-                :logs="logs.tasks"
+              <release-tab
+                :releases="releases"
                 :model="model"
+                :logs="logs.tasks"
                 :progress="installationProgress"
                 :running="installationRunning"
                 :success="installationSuccess"
-                :done="installationDone"
-              ></verification-tab>
+                :done="installationDone"></release-tab>
             </tab-content>
           </form-wizard>
         </div>
@@ -49,10 +43,8 @@
 import { FormWizard, TabContent } from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
 import "@fortawesome/fontawesome-free/css/all.css";
-import WelcomeTab from "@/components/wizard/WelcomeTab.vue";
 import ConnectionTab from "@/components/wizard/ConnectionTab.vue";
 import ReleaseTab from "@/components/wizard/ReleaseTab.vue";
-import VerificationTab from "@/components/wizard/VerificationTab.vue";
 import ControlService from "@/store/ControlService";
 
 export default {
@@ -60,10 +52,8 @@ export default {
   components: {
     FormWizard,
     TabContent,
-    WelcomeTab,
     ConnectionTab,
     ReleaseTab,
-    VerificationTab,    
   },
   data() {
     return {

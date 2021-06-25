@@ -1,16 +1,38 @@
 <template>
-  <div class="container text-left">
-    <h3>Choose Version - multiple found</h3>
+  <div>
+    <div class="container text-left" v-if="!running || done">
+      <h3>Choose Version - multiple found</h3>
 
-    <div class="text-left">
-      <b-form-radio-group
-        :stacked="true"
-        label="Pick Stereum Release"
-        :options="releases"
-        v-model="model.stereumRelease"
-        value-field="value"
-      >
-      </b-form-radio-group>      
+      <div class="text-left">
+        <b-form-radio-group
+          :stacked="true"
+          label="Pick Stereum Release"
+          :options="releases"
+          v-model="model.stereumRelease"
+          value-field="value"
+        >
+        </b-form-radio-group>      
+      </div>
+    </div>
+
+    <div v-if="running || done">
+      <div v-if="running">
+        <div class="alert alert-primary" role="alert">
+          <b>Connection in progress. When connecting to a new node or updating a node it takes up to a couple of minutes to prepare the server.</b>&nbsp;
+          <i class="fas fa-cog fa-spin"></i>
+        </div>
+      </div>
+
+      <div v-if="success === true">
+        <div class="alert alert-success" role="alert">
+          Preparation Successful! You are good to go!
+        </div>
+      </div>
+      <div v-if="success === false">
+        <div class="alert alert-danger" role="alert">
+          Unfortunately the preparations failed, please consult logs for details.
+        </div>
+      </div>        
     </div>
   </div>
 </template>
@@ -22,6 +44,11 @@ export default {
   props: {
     releases: Array,
     model: Object,
+    running: Boolean,
+    success: Boolean,
+    done: Boolean,
+    progress: Number,
+    logs: Array,
   },
 };
 </script>
