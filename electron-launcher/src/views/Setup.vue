@@ -19,12 +19,20 @@ export default {
   data() {
     return {
       connectionParms: {
+        host: '',
+        user: '',
+        keyfileLocation: '',
+        sshKeyAuth: false,
+        port: 22,
+      }
+      /*
+      connectionParms: {
         host: '135.181.44.221',
         user: 'root',
         keyfileLocation: '/Users/stefa2k/.ssh/id_rsa',
         sshKeyAuth: false,
         port: 22,
-      }
+      }*/
     };
   },  
 };
