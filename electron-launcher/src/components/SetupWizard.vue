@@ -103,9 +103,11 @@ export default {
           this.$toasted.show('Error setting up stereum launcher! Level: ' + ex.level + " Message: " + ex.message);
           return;
         }
-      }
 
-      if (status == 0) {
+        await ControlService.openTunnels([{ dstPort: 8000, localPort: 8081}, { dstPort: 3000, localPort: 8082}, { dstPort: 7500, localPort: 8083}]);
+        window.location.replace("http://localhost:8081/public/setup");
+
+      } else if (status == 0) {
         await ControlService.openTunnels([{ dstPort: 8000, localPort: 8081}, { dstPort: 3000, localPort: 8082}, { dstPort: 7500, localPort: 8083}]);
         window.location.replace("http://localhost:8081/public/control-center");
       }
