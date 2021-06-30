@@ -95,7 +95,10 @@ export default {
       }
 
       await ControlService.openTunnels([{ dstPort: 8000, localPort: 8081}, { dstPort: 3000, localPort: 8082}, { dstPort: 7500, localPort: 8083}]);
-      window.location.replace("http://localhost:8081");
+      // wait a bit to get the ssh tunnels fully up
+      setTimeout(function() {
+        window.location.replace("http://localhost:8081");
+      }, 2500);
     },
     fetchReleases: async function () {
       try {
