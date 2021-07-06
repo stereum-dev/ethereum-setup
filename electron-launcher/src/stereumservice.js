@@ -115,10 +115,10 @@ export class StereumService {
         return stereumInfo;        
     }
 
-    async launch_bundle(existing_release) {
+    async launch_bundle(existing_release, port) {
         return new Promise(async (resolve, reject) => {
             console.log('  launching installation of stereum release ' + existing_release + ' This can take a few minutes, your browser will open up upon completion with the installation wizard!');
-            const resp = await this.sshService.exec("chmod +x /tmp/base_installer.run && /tmp/base_installer.run --extra-vars=existing_release=\"" + existing_release + "\"");
+            const resp = await this.sshService.exec("chmod +x /tmp/base_installer.run && /tmp/base_installer.run --extra-vars=existing_release=\"" + existing_release + "\" --extra-vars=stereum_ssh_port=\"" + port +"\"");
             if (resp.rc == 0) {
                 console.log ('    successfully launched base-installer')
                 resolve(resp);
@@ -151,7 +151,8 @@ export class StereumService {
             let status;
             if (resp.rc == 0) {
                 console.log('    successfully fetched base-installer');
-                status = await this.launch_bundle(release);
+                let sshPort = this.sshService.connectionInfo.port || 22;
+                status = await this.launch_bundle(release, sshPort);
                 resolve(status);
             } else {
                 console.log("**** problems fetching base-installer: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
