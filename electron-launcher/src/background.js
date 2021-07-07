@@ -4,8 +4,10 @@ import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { StereumService } from './stereumService.js'
+import { StorageService } from './storageservice.js'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const stereumService = new StereumService();
+const storageService = new StorageService();
 import promiseIpc from 'electron-promise-ipc';
 import path from 'path';
 import { readFileSync } from 'fs';
@@ -37,6 +39,14 @@ promiseIpc.on('setup', async (arg) => {
 // called via promiseIpc as an async function
 promiseIpc.on('tunnel', async (arg) => {        
   return stereumService.openTunnels(arg);    
+});
+
+// userData storage
+promiseIpc.on('readConfig', async () => {
+  return storageService.readConfig();
+});
+promiseIpc.on('writeConfig', async (arg) => {
+  return storageService.writeConfig(arg);
 });
 
 // Scheme must be registered before the app is ready
