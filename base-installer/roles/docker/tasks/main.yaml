@@ -6,6 +6,15 @@
     update_cache: yes
     force_apt_get: yes
 
+- name: Remove conflicting docker packages
+  apt:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - docker-engine
+    - docker.io
+    - docker-registry
+
 - name: Install required system packages
   apt:
     name: "{{ item }}"
