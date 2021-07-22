@@ -7,7 +7,7 @@ module.exports = {
     pluginOptions: {
         electronBuilder: {
           preload: 'src/preload.js',
-          externals: ['cpufeatures.node'],
+          externals: ['cpufeatures','sshcrypto','ssh2'],
         }
     },
     configureWebpack: {
