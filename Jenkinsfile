@@ -13,16 +13,6 @@ pipeline {
                 }                
             }
         }
-        stage('Build Launcher') {
-            steps {
-                checkout scm                
-                dir('launcher') {                    
-                    sh 'sed -i s/%%RELEASE%%/${RELEASE}/ launcher.py'
-                    sh 'pyinstaller --onefile launcher.py'
-                    sh 'cp dist/launcher /var/jenkins_home/publish'
-                }                
-            }
-        }
         stage('Push') {
             steps {
                 // TODO: build windows binary and copy to share
