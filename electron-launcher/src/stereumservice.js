@@ -48,10 +48,20 @@ export class StereumService {
         // check if /etc/stereum/ethereum2.yaml does not exist
         console.log('  checking stereum controlcenter');
         const resp = await this.sshService.exec("sudo cat /opt/stereum/controlcenter/.env");
+        console.log('resp.rc: ' + resp.rc);
         if (resp.rc == 0) {
             const out = resp.stdout;
-            console.log('  found /opt/stereum/controlcenter/.env with content %s' %out);
-            return out.split('=')[1].replace('\n','');
+            console.log('  found /opt/stereum/controlcenter/.env with content' + out);
+            const envLines = out.split('\n');
+            let versionLine = "";
+            for(let l of envLines) {
+                if (l.startsWith('stereum_version_tag=')) {
+                    versionLine = l;
+                    break;
+                }
+            }
+            console.log('  extracting version of /opt/stereum/controlcenter/.env of line ' + versionLine);
+            return versionLine.split('=')[1];
         }
         return undefined;
     }

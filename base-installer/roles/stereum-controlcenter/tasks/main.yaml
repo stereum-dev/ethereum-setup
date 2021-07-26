@@ -3,7 +3,7 @@
   shell: docker-compose down
   args:
     chdir: /opt/stereum/controlcenter
-  # ignore errors in case the container is not running
+  # ignore errors in case the container is not running, also this is necessary because we use the same network in e2dc as well and this throws errors of attached containers to networks
   ignore_errors: yes
 
 - name: delete previous release
@@ -37,7 +37,7 @@
     chdir: /opt/stereum/controlcenter/stereum
 
 - name: create .env
-  shell: "echo \"stereum_version_tag\"={{ stereum_version }} > .env"
+  shell: "echo $'COMPOSE_PROJECT_NAME=stereum\n\nstereum_version_tag={{ stereum_version }}' > .env"
   args:
     chdir: /opt/stereum/controlcenter/
 

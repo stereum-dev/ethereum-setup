@@ -14,5 +14,12 @@ services:
       - $PWD/stereum:/opt/app/stereum-release
     extra_hosts:
       - "{{ docker_host_internal }}:host-gateway"
+    networks:
+      stereum-admin:
+      default:
 
+networks:
+  stereum-admin:
+    internal: true
+  default:
 # EOF
