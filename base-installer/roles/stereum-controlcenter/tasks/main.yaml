@@ -37,9 +37,11 @@
     chdir: /opt/stereum/controlcenter/stereum
 
 - name: create .env
-  shell: "echo $'COMPOSE_PROJECT_NAME=stereum\n\nstereum_version_tag={{ stereum_version }}' > .env"
-  args:
-    chdir: /opt/stereum/controlcenter/
+  template:
+    src: env
+    dest: /opt/stereum/controlcenter/.env
+    owner: stereum
+    mode: '0644'
 
 - name: create playbook.yaml
   shell: "cp init-setup.yaml playbook.yaml"
