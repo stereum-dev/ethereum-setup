@@ -15,6 +15,10 @@
     "postinstall": "npm run modernizr && electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:stereum-dev/ethereum-setup.git"
+  },
   "main": "background.js",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
@@ -23,8 +27,6 @@
     "core-js": "^3.15.1",
     "electron-promise-ipc": "^2.2.4",
     "electron-store": "^8.0.0",
-    "iconv": "^3.0.0",
-    "iconv-corefoundation": "^1.1.6",
     "js-yaml": "^4.1.0",
     "ssh2": "^1.1.0",
     "tunnel-ssh": "^4.1.4",
@@ -47,6 +49,7 @@
     "eslint": "5.16.0",
     "eslint-plugin-vue": "5.0.0",
     "imports-loader": "0.8.0",
+    "modernizr": "^3.11.7",
     "vue-cli-plugin-electron-builder": "~2.0.0-rc.6",
     "vue-template-compiler": "^2.6.14"
   },
