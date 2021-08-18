@@ -4,6 +4,7 @@
     name:
       - yum-utils
       - curl
+      - epel-release
     state: latest
 
 - name: Add repository
