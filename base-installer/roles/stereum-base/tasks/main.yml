@@ -2,11 +2,15 @@
 # Setup/install tasks.
 - name: Set up users.
   include_tasks: setup-users.yml
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  # when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: Configure Apt.
+- name: Configure apt
   include_tasks: setup-apt.yml
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: Configure yum
+  include_tasks: setup-yum.yml
+  when: ansible_distribution == "CentOS"
 
   #- name: Configure ssh.
   #include_tasks: setup-ssh.yml

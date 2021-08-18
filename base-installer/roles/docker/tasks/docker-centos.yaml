@@ -1,0 +1,31 @@
+---
+- name: Install the latest version of yum-utils, curl
+  yum:
+    name:
+      - yum-utils
+      - curl
+    state: latest
+
+- name: Add repository
+  yum_repository:
+    name: docker-ce
+    baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: Install docker-ce
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: latest
+
+- name: Install docker-compose
+  shell: curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+- name: Make docker-compose executable
+  shell: chmod +x /usr/local/bin/docker-compose
+
+- name: Link docker-compose
+  shell: ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+# EOF
