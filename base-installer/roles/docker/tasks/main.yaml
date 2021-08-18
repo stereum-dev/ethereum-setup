@@ -12,6 +12,7 @@
     name: docker
     enabled: yes
     masked: no
+    state: started
 
 - name: add stereum user to docker group
   user:
