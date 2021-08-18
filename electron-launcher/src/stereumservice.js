@@ -147,7 +147,7 @@ export class StereumService {
             let resp = await this.sshService.exec("which curl");
             if (resp.stdout.length > 0) {
                 console.log('  found curl at ' + resp.stdout.replace('\n',''));
-                commandString = "curl --silent https://stereum.net/downloads/base-installer-" + release + ".run --output /tmp/stereum-installer";
+                commandString = "curl --silent https://stereum.net/downloads/base-installer-" + release + ".run --output /tmp/base_installer.run";
             }
             resp = await this.sshService.exec("which wget");
             if (resp.stdout.length > 0) {
