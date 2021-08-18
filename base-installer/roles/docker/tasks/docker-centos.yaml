@@ -12,7 +12,6 @@
     name: docker-ce
     description: Docker CE repo
     baseurl: https://download.docker.com/linux/centos/8/x86_64/stable/
-    disable_gpg_check: yes
 
 - name: Install docker-ce
   yum:
@@ -21,6 +20,7 @@
       - docker-ce-cli
       - containerd.io
     state: latest
+    disable_gpg_check: yes
 
 - name: Install docker-compose
   shell: curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
