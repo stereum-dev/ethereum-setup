@@ -96,13 +96,17 @@ export class SSHService {
             };
             console.log(config);
             
-            tunnel(config, (error, server) => {
+            var server = tunnel(config, (error, server) => {
                 if (error) {
                     console.error('Tunnel Connection failed!');
                     return reject(error);
                 }
                 console.error(`Tunnel Connection established! (${tunnelConfig.localPort})`);
                 resolve(server);
+            });
+
+            server.on('error', function(error) {
+                console.error('Tunnel connection error: ', error);
             });
         });
     }
