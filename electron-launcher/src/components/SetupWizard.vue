@@ -157,13 +157,23 @@ export default {
 
 <style scoped>
 .main-card {
-  margin-top: 5%;
-  margin-left: 10%;
-  margin-right: 10%;
-  min-width: 80%;
+  margin-top: 10px;
+  margin-left: 5%;
+  margin-right: 5%;
+  min-width: 90%;
 }
 
 .main-card img {
   max-height: 50px;
 }
+
+.card-body {
+  padding: 0.5rem;
+}
+
+.vue-form-wizard {
+  padding-bottom: 0px;
+}
+
 </style>
+
