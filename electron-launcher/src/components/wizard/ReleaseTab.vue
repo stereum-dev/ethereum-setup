@@ -1,8 +1,13 @@
 <template>
   <div>
     <div class="container text-left" v-if="!running || done">
-      <h3>Choose Version - multiple found</h3>
+      <h3>Version</h3>
 
+      <p>Selected: <b>{{ model.stereumRelease }}</b></p>
+
+      <b-form-checkbox v-model="showAdvanced" name="showAdvanced" switch>
+        Show all versions
+      </b-form-checkbox>
       <div class="text-left">
         <b-form-radio-group
           :stacked="true"
@@ -10,6 +15,7 @@
           :options="releases"
           v-model="model.stereumRelease"
           value-field="value"
+          v-if="showAdvanced"
         >
         </b-form-radio-group>      
       </div>
@@ -40,7 +46,12 @@
 <script>
 export default {
   name: "ReleaseTab",
-  components: {},  
+  components: {},
+  data() {
+    return {
+      showAdvanced: false,
+    };
+  },
   props: {
     releases: Array,
     model: Object,

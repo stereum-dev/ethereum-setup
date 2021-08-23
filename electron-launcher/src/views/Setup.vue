@@ -24,6 +24,7 @@ export default {
         keyfileLocation: '',
         sshKeyAuth: false,
         port: 22,
+        stereumRelease: '',
       }
       /*
       connectionParms: {
