@@ -1,5 +1,3 @@
-const webpack = require('webpack')
-
 module.exports = {
     lintOnSave: false,
     publicPath: process.env.VUE_BASE_URL || '/',
@@ -7,25 +5,7 @@ module.exports = {
     pluginOptions: {
         electronBuilder: {
           preload: 'src/preload.js',
-          externals: ['cpufeatures','sshcrypto','ssh2'],
         }
-    },
-    configureWebpack: {
-        module: {
-            // Fix for flot resize
-            rules: [{
-                test: /jquery\.flot\.resize\.js$/,
-                use: 'imports-loader?this=>window'
-            }]
-        },
-        plugins: [
-            new webpack.ProvidePlugin({
-                $: 'jquery',
-                jquery: 'jquery',
-                'window.jQuery': 'jquery',
-                jQuery: 'jquery'
-            })
-        ]
     },
     transpileDependencies: [
         'resize-detector' // vue-echarts
