@@ -3,7 +3,7 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import { StereumService } from './stereumService.js'
+import { StereumService } from './stereumservice.js'
 import { StorageService } from './storageservice.js'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const stereumService = new StereumService();
