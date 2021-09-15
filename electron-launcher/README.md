@@ -1,9 +1,30 @@
 # Electron Launcher
 
-## Project setup
+## Build
+
+### Ubuntu
+Install [docker-ce](https://docs.docker.com/engine/install/ubuntu/).
+
+```
+# Clone this repository:
+git clone https://github.com/stereum-dev/ethereum-setup.git
+
+# change directory
+cd electron-launcher
+
+# then start the build
+sudo DOCKER_BUILDKIT=1 docker build -o out .
+
+# now install the generated package
+sudo snap install out/stereum-launcher_0.0.0_amd64.snap --dangerous
+
+# run stereum-launcher
+stereum-launcher
+```
+
+## Common
 ```
 npm install -g modernizr
-npm install iconv-corefoundation
 npm install
 ```
 
@@ -14,7 +35,7 @@ npm install
 # start electron build
 npm run electron:build
 ```
-### Test electron
+### Test (run locally) electron
 ```
 npm run electron:serve
 ```
