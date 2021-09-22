@@ -88,7 +88,7 @@ export class SSHService {
                 port: this.connectionInfo.port || 22,
                 dstHost: 'localhost',
                 dstPort: tunnelConfig.dstPort,
-                localHost:'0.0.0.0',
+                localHost:'localhost',
                 localPort: tunnelConfig.localPort,
                 privateKey: this.connectionInfo.privateKey || undefined,                
             };
