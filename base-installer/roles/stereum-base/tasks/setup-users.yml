@@ -5,13 +5,12 @@
     password: "{{ ubuntu_common_stereum_password | password_hash('sha512') }}" 
     shell: /bin/bash
     generate_ssh_key: yes
-    ssh_key_type: rsa
-    ssh_key_bits: 4096
-    ssh_key_file: .ssh/id_rsa
+    ssh_key_type: ed25519
+    ssh_key_file: .ssh/id_ed25519
     force: no
 
 - name: Read public key into variable
-  command: cat /home/{{ ubuntu_common_stereum_user_name }}/.ssh/id_rsa.pub
+  command: cat /home/{{ ubuntu_common_stereum_user_name }}/.ssh/id_ed25519.pub
   register: user_public_key_file
 
 - name: Add authorized keys for stereum user for local ssh
