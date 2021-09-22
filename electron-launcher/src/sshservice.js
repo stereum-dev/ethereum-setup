@@ -15,8 +15,6 @@ export class SSHService {
         this.connectionInfo = connectionInfo;
         this.conn = new Client();
 
-        console.log('CONNECT: connectionInfo', this.connectionInfo)
-
         return new Promise((resolve, reject) => {            
             this.conn.on('error', (error) => {
                 this.conn.end();
@@ -94,7 +92,6 @@ export class SSHService {
                 localPort: tunnelConfig.localPort,
                 privateKey: this.connectionInfo.privateKey || undefined,                
             };
-            console.log(config);
             
             var server = tunnel(config, (error, server) => {
                 if (error) {
