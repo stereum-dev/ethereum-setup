@@ -35,7 +35,7 @@ export class SSHService {
 
     async disconnect(connectionInfo) {        
         
-        console.log('DISCONNECT: connectionInfo', this.connectionInfo)
+        console.log('DISCONNECT: connectionInfo', this.connectionInfo.host)
         
         return new Promise((resolve, reject) => {
             try {
