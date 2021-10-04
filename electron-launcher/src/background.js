@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, shell } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { StereumService } from './stereumservice.js'
@@ -11,6 +11,7 @@ const storageService = new StorageService();
 import promiseIpc from 'electron-promise-ipc';
 import path from 'path';
 import { readFileSync } from 'fs';
+import url from "url";
 
 let remoteHost = {};
 
@@ -94,6 +95,19 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
+})
+
+app.on('web-contents-created', (event, contents) => {
+  // open every new window in the OS's default browser instead of a
+  // new Electron windows.
+  contents.on('new-window', (event, navigationUrl) => {
+    const parsedUrl = new url.URL(navigationUrl);
+    event.preventDefault();
+
+    if (["https:", "http:", "mailto:"].includes(parsedUrl.protocol)) {
+      shell.openExternal(navigationUrl);
+    }
+  })
 })
 
 // This method will be called when Electron has finished
