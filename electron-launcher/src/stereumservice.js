@@ -173,6 +173,20 @@ export class StereumService {
         });        
     }
 
+    async setApikey(apikey) {
+        return new Promise(async (resolve, reject) => {
+            let resp = await this.sshService.exec("echo '" + apikey + "' > /etc/stereum/cc-apikey", "echo '<apikey>' > /etc/stereum/cc-apikey");
+            if (resp.rc == 0) {
+                console.log('    successfully set apikey');
+                resolve(resp);
+            } else {
+                console.log("**** problems setting apikey: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
+                status = -1;
+                reject(resp);
+            }
+        });
+    }
+
     async openTunnels(args) {
         for (const tunnel of args) {
             await this.sshService.tunnel(tunnel);        

@@ -42,6 +42,11 @@ promiseIpc.on('tunnel', async (arg) => {
   return stereumService.openTunnels(arg);    
 });
 
+// called via promiseIpc as an async function
+promiseIpc.on('setApikey', async (arg) => {        
+  return stereumService.setApikey(arg);    
+});
+
 // userData storage
 promiseIpc.on('readConfig', async () => {
   return storageService.readConfig();

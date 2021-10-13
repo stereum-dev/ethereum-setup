@@ -48,32 +48,35 @@ export class SSHService {
         })
     }
         
-    async exec(command) {        
+    async exec(command) {
+        this.exec(command, command)
+    }
 
-        console.log('exec', command)        
+    async exec(command, logline) {
+        console.log('exec', logline)
         
         return new Promise((resolve, reject) => {
             let data = {
                 rc: -1,
                 stdout: '',
                 stderr: '',
-            }                        
+            }
             this.conn.exec(command, (err, stream) => {
                 if (err) return reject(err);
                 stream
-                    .on('close', (code, signal) => {                                                
-                        console.log('stream closed', code);                             
+                    .on('close', (code, signal) => {
+                        console.log('stream closed', code);
                         data.rc = code;
                         resolve(data);
-                    })                        
-                    .on('data', (stdout) => { 
-                        console.log('stdout got data', stdout.toString('utf8'));                             
+                    })
+                    .on('data', (stdout) => {
+                        console.log('stdout got data', stdout.toString('utf8'));
                         data.stdout = stdout.toString('utf8');
                     })
                     .stderr.on('data', (stderr) => {
-                        console.log('stderr got data', stderr.toString('utf8'));                             
+                        console.log('stderr got data', stderr.toString('utf8'));
                         data.stderr = stderr.toString('utf8');
-                    });                
+                    });
             })
         });
     }

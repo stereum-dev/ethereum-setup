@@ -95,10 +95,27 @@ export default {
       }
 
       await ControlService.openTunnels([{ dstPort: 8000, localPort: 8081}, { dstPort: 3000, localPort: 8082}, { dstPort: 7500, localPort: 8083}]);
+      
+      setTimeout(function() {
+        console.log("waited for ssh tunnels to connect");
+      }, 1000);
+
+      const apikey = this.genApikey(64);
+      await ControlService.setApikey(apikey);
+      
       // wait a bit to get the ssh tunnels fully up
       setTimeout(function() {
-        window.location.replace("http://localhost:8081");
-      }, 2500);
+        window.location.replace("http://localhost:8081/?apikey=" + apikey);
+      }, 1500);
+    },
+    genApikey: function(length) {
+        var result           = '';
+        var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var charactersLength = characters.length;
+        for ( var i = 0; i < length; i++ ) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
     },
     fetchReleases: async function () {
       try {
