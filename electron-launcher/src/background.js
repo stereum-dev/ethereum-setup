@@ -13,10 +13,12 @@ import path from 'path';
 import { readFileSync } from 'fs';
 import url from "url";
 
+const log = require('electron-log');
+
 let remoteHost = {};
 
 promiseIpc.on('ready', (arg) => {
-  console.log('background process ready')
+  log.info('background process ready')
 })
 
 // called via promiseIpc as an async function
@@ -124,7 +126,7 @@ app.on('ready', async () => {
     try {
       await installExtension(VUEJS_DEVTOOLS)
     } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString())
+      log.error('Vue Devtools failed to install:', e.toString())
     }
   //}
   createWindow()  

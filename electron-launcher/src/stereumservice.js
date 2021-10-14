@@ -2,6 +2,7 @@ import { SSHService } from './sshservice.js'
 import * as axios from 'axios'
 import * as yaml from 'js-yaml'
 
+const log = require('electron-log');
 
 export class StereumService {
 
@@ -11,47 +12,47 @@ export class StereumService {
 
     async check_stereum() {
         // check if /etc/stereum/ethereum2.yaml does not exist
-        console.log('  checking stereum');
+        log.info('  checking stereum');
         let exists = false;
         try {
             let resp = await this.sshService.exec("sudo ls /etc/stereum/ethereum2.yaml");
             exists = resp.rc == 0;
         } catch (ex) {
-            console.log("can't access ethereum2.yaml");
+            log.error("can't access ethereum2.yaml");
         }
         return exists;
     }
 
     async get_latest_stereum_release_tag() {
         let latest_stereum_release_tag = undefined;
-        console.log('Fetching latest stereum releasetag from https://stereum.net/downloads/stable.update');
+        log.info('Fetching latest stereum releasetag from https://stereum.net/downloads/stable.update');
         const resp = await axios.get('https://stereum.net/downloads/stable.update');
         if (resp.status == 200) {
             latest_stereum_release_tag = resp.data.replace('\n', '');
-            console.log('Found stereum release %s as latest available release' %latest_stereum_release_tag);
+            log.info('Found stereum release %s as latest available release' %latest_stereum_release_tag);
         }
         return latest_stereum_release_tag;
     }
 
     async get_latest_stereum_release_rc_tag() {
         let latest_stereum_release_tag = undefined;
-        console.log('Fetching latest stereum releasetag from https://stereum.net/downloads/rc.update');
+        log.info('Fetching latest stereum releasetag from https://stereum.net/downloads/rc.update');
         const resp = await axios.get('https://stereum.net/downloads/rc.update');
         if (resp.status == 200) {
             latest_stereum_release_tag = resp.data.replace('\n', '');
-            console.log('Found stereum release rc %s as latest available release rc ' %latest_stereum_release_tag);
+            log.info('Found stereum release rc %s as latest available release rc ' %latest_stereum_release_tag);
         }
         return latest_stereum_release_tag;
     }
 
     async check_controlcenter() {
         // check if /etc/stereum/ethereum2.yaml does not exist
-        console.log('  checking stereum controlcenter');
+        log.info('  checking stereum controlcenter');
         const resp = await this.sshService.exec("sudo cat /opt/stereum/controlcenter/.env");
-        console.log('resp.rc: ' + resp.rc);
+        log.info('resp.rc: ' + resp.rc);
         if (resp.rc == 0) {
             const out = resp.stdout;
-            console.log('  found /opt/stereum/controlcenter/.env with content' + out);
+            log.info('  found /opt/stereum/controlcenter/.env with content' + out);
             const envLines = out.split('\n');
             let versionLine = "";
             for(let l of envLines) {
@@ -60,7 +61,7 @@ export class StereumService {
                     break;
                 }
             }
-            console.log('  extracting version of /opt/stereum/controlcenter/.env of line ' + versionLine);
+            log.info('  extracting version of /opt/stereum/controlcenter/.env of line ' + versionLine);
             return versionLine.split('=')[1];
         }
         return undefined;
@@ -68,7 +69,7 @@ export class StereumService {
 
     async check_controlcenter_web() {
         // check if /etc/stereum/ethereum2.yaml does not exist
-        console.log('  checking stereum web cc');
+        log.info('  checking stereum web cc');
         const resp = await this.sshService.exec("sudo docker ps | grep control");
         if (resp.rc == 0) {                    
             return resp.stdout.split('   ')[1].split(':')[1];
@@ -78,7 +79,7 @@ export class StereumService {
 
     async get_stereum_release() {
         // check if /etc/stereum/ethereum2.yaml does not exist
-        console.log('  getting installed stereum version');
+        log.info('  getting installed stereum version');
         const resp = await this.sshService.exec("sudo cat /etc/stereum/ethereum2.yaml");
         if (resp.rc == 0) {            
             let yaml_doc = yaml.load(resp.stdout);
@@ -127,13 +128,13 @@ export class StereumService {
 
     async launch_bundle(existing_release, port) {
         return new Promise(async (resolve, reject) => {
-            console.log('  launching installation of stereum release ' + existing_release + ' This can take a few minutes, your browser will open up upon completion with the installation wizard!');
+            log.info('  launching installation of stereum release ' + existing_release + ' This can take a few minutes, your browser will open up upon completion with the installation wizard!');
             const resp = await this.sshService.exec("chmod +x /tmp/base_installer.run && /tmp/base_installer.run --extra-vars=existing_release=\"" + existing_release + "\" --extra-vars=stereum_ssh_port=\"" + port +"\"");
             if (resp.rc == 0) {
-                console.log ('    successfully launched base-installer')
+                log.info ('    successfully launched base-installer')
                 resolve(resp);
             } else {
-                console.log("**** problems launch base-installer: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
+                log.error("**** problems launch base-installer: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
                 reject(resp);
             }
             return resp.rc
@@ -143,29 +144,29 @@ export class StereumService {
     async setup(release) {
         return new Promise(async (resolve, reject) => {
             let commandString = "";
-            console.log('checking requirements for base-installation');
+            log.info('checking requirements for base-installation');
             let resp = await this.sshService.exec("which curl");
             if (resp.stdout.length > 0) {
-                console.log('  found curl at ' + resp.stdout.replace('\n',''));
+                log.info('  found curl at ' + resp.stdout.replace('\n',''));
                 commandString = "curl --silent https://stereum.net/downloads/base-installer-" + release + ".run --output /tmp/base_installer.run";
             }
             resp = await this.sshService.exec("which wget");
             if (resp.stdout.length > 0) {
-                console.log('  found wget at ' + resp.stdout.replace('\n',''));
+                log.info('  found wget at ' + resp.stdout.replace('\n',''));
                 commandString = "wget https://stereum.net/downloads/base-installer-" + release + ".run -O /tmp/base_installer.run";
             }
             
-            console.log('using base-installer bundle');
-            console.log('  fetching');
+            log.info('using base-installer bundle');
+            log.info('  fetching');
             resp = await this.sshService.exec(commandString);
             let status;
             if (resp.rc == 0) {
-                console.log('    successfully fetched base-installer');
+                log.info('    successfully fetched base-installer');
                 let sshPort = this.sshService.connectionInfo.port || 22;
                 status = await this.launch_bundle(release, sshPort);
                 resolve(status);
             } else {
-                console.log("**** problems fetching base-installer: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
+                log.error("**** problems fetching base-installer: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
                 status = -1;
                 reject(resp);
             }
@@ -177,10 +178,10 @@ export class StereumService {
         return new Promise(async (resolve, reject) => {
             let resp = await this.sshService.exec("echo '" + apikey + "' > /etc/stereum/cc-apikey", "echo '<apikey>' > /etc/stereum/cc-apikey");
             if (resp.rc == 0) {
-                console.log('    successfully set apikey');
+                log.info('    successfully set apikey');
                 resolve(resp);
             } else {
-                console.log("**** problems setting apikey: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
+                log.error("**** problems setting apikey: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
                 status = -1;
                 reject(resp);
             }

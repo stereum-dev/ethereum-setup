@@ -2,6 +2,7 @@ const { readFileSync } = require('fs');
 const { Client } = require('ssh2');
 const tunnel = require('tunnel-ssh');
 const fs = require('fs')
+const log = require('electron-log');
 
 export class SSHService {
 
@@ -35,7 +36,7 @@ export class SSHService {
 
     async disconnect(connectionInfo) {        
         
-        console.log('DISCONNECT: connectionInfo', this.connectionInfo.host)
+        log.info('DISCONNECT: connectionInfo', this.connectionInfo.host)
         
         return new Promise((resolve, reject) => {
             try {
@@ -53,7 +54,7 @@ export class SSHService {
     }
 
     async exec(command, logline) {
-        console.log('exec', logline)
+        log.info('exec', logline)
         
         return new Promise((resolve, reject) => {
             let data = {
@@ -65,16 +66,16 @@ export class SSHService {
                 if (err) return reject(err);
                 stream
                     .on('close', (code, signal) => {
-                        console.log('stream closed', code);
+                        log.info('stream closed', code);
                         data.rc = code;
                         resolve(data);
                     })
                     .on('data', (stdout) => {
-                        console.log('stdout got data', stdout.toString('utf8'));
+                        log.info('stdout got data', stdout.toString('utf8'));
                         data.stdout = stdout.toString('utf8');
                     })
                     .stderr.on('data', (stderr) => {
-                        console.log('stderr got data', stderr.toString('utf8'));
+                        log.info('stderr got data', stderr.toString('utf8'));
                         data.stderr = stderr.toString('utf8');
                     });
             })
@@ -98,15 +99,15 @@ export class SSHService {
             
             var server = tunnel(config, (error, server) => {
                 if (error) {
-                    console.error('Tunnel Connection failed!');
+                    log.error('Tunnel Connection failed!');
                     return reject(error);
                 }
-                console.error(`Tunnel Connection established! (${tunnelConfig.localPort})`);
+                log.info(`Tunnel Connection established! (${tunnelConfig.localPort})`);
                 resolve(server);
             });
 
             server.on('error', function(error) {
-                console.error('Tunnel connection error: ', error);
+                log.error('Tunnel connection error: ', error);
             });
         });
     }
