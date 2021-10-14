@@ -122,7 +122,7 @@ export default {
             await ControlService.connect(this.model);
       } catch (ex) {  
          console.log(ex);
-         this.$toasted.show('Error connecting to server! Level: ' + ex.level + " Message: " + ex.message);
+         this.$toasted.error('Error connecting to server! Level: ' + ex.level + " Message: " + ex.message, { duration: 5000 });
          return;
       }
       try {
@@ -164,7 +164,7 @@ export default {
         return Promise.resolve(true);
       } catch (ex) {
          console.log(ex);
-         this.$toasted.show('Error fetching Stereum Versions! Level: ' + ex.level + " Message: " + ex.message);
+         this.$toasted.error('Error fetching Stereum Versions! Level: ' + ex.level + " Message: " + ex.message, { duration: 5000 });
          return;
       }
     }
