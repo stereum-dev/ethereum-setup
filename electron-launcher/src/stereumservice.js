@@ -176,13 +176,12 @@ export class StereumService {
 
     async setApikey(apikey) {
         return new Promise(async (resolve, reject) => {
-            let resp = await this.sshService.exec("echo '" + apikey + "' > /etc/stereum/cc-apikey", "echo '<apikey>' > /etc/stereum/cc-apikey");
+            let resp = await this.sshService.exec("sudo bash -c \"echo '" + apikey + "' > /etc/stereum/cc-apikey\"", "sudo bash -c \"echo '<apikey>' > /etc/stereum/cc-apikey\"");
             if (resp.rc == 0) {
                 log.info('    successfully set apikey');
                 resolve(resp);
             } else {
                 log.error("**** problems setting apikey: Status: " + resp.rc + " ****, ansible logs below:\n, " + resp.stdout);
-                status = -1;
                 reject(resp);
             }
         });
