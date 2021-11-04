@@ -15,6 +15,7 @@ class ControlService extends EventEmitter {
 
     async connect(args) {
         return this.promiseIpc.send('connect', {
+            servername: args.servername,
             host: args.host,
             port: args.port,
             user: args.user,
