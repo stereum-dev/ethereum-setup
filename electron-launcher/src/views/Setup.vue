@@ -19,6 +19,7 @@ export default {
   data() {
     return {
       connectionParms: {
+        servername: '',
         host: '',
         user: '',
         keyfileLocation: '',
